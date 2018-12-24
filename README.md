@@ -4,14 +4,9 @@ The goal of this project is to provide an efficient algorithm to locate potentia
 
 ## Getting Started
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
-
-### Prerequisites
-
-What things you need to install the software and how to install them
-
+Enter the project directory, and generate the executable from code by using 
 ```
-Give examples
+make
 ```
 
 ### Installing

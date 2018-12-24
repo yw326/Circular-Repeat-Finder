@@ -8,6 +8,8 @@ Enter the project directory, and generate the executable from code by using
 ```
 make
 ```
+You should be getting an executable called mccreight.
+
 
 ### Installing
 
@@ -38,6 +40,7 @@ Explain what these tests test and why
 ```
 Give an example
 ```
+
 
 ### And coding style tests
 

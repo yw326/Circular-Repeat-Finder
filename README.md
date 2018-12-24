@@ -23,11 +23,9 @@ The executable has 2 required argument and 3 optional arguments:
 Broadly speaking, minimum maximal repeat length and minimum extension length can be thought of as the minimum length of s1 and s2. Also note that the mismatch ratio is for the extension section of the circle repeat, not the entire circle repeat. We encourage you to read the pdf report (to be uploaded) to have a better understanding of these parameters.
 
 ## Example
-For example,
-
 ```
 ./mccreight NC_021868.txt direct -r 10 -e 5 -m 0.1
 ```
 
-Searches for direct circle repeats in the sequence from file NC_021868.txt, with minimum maximal repeat length 10, minimum extension length 5, and allowed mismatch ration 10%.
+The above command searches for direct circle repeats in the sequence from file NC_021868.txt, with minimum maximal repeat length 10, minimum extension length 5, and allowed mismatch ration 10%.
 

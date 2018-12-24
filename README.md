@@ -1,6 +1,6 @@
 # MicroDNA_Detection
 
-The goal of this project is to provide an efficient algorithm to locate potential microDNAs within DNA sequences. Each potential microDNA is mathematically defined as a circle repeat, with form "...s1s2...s2s1..." (direct circle repeat), and "...s1s2...s1^(-1)s2^(-1)..." (reversed circle repeat). The algorithm works by (1) building a suffix tree and finding all the maximal repeated pairs, (2) checking extensions of each repeated pair for potential circle repeat using KMP, (3) calculating edit-distance of KMP matches to determine whether it's an approximate match.
+The goal of this project is to provide an efficient algorithm to locate potential microDNAs within DNA sequences. Each potential microDNA is mathematically defined as a circle repeat, with form "...s1s2...s2s1..." (direct circle repeat), and "...s1s2...s1^(-1)s2^(-1)..." (reversed circle repeat). The detailed description of the algorithm can be found in the pdf file (to be uploaded).
 
 ## Getting Started
 

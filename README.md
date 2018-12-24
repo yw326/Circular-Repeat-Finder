@@ -20,6 +20,8 @@ The executable has 2 required argument and 3 optional arguments:
 * Optional argument: "-e minimum_extension_length". Default value of minimum extension length length is 20.
 * Optional argument: "-m percentage_mismatch_allowed". Default value of percentage mismatch is 0.1
 
+Broadly speaking, minimum maximal repeat length and minimum extension length can be thought of as the minimum length of s1 and s2. Also note that the mismatch ratio is for the extension section of the circle repeat, not the entire circle repeat. We encourage you to read the pdf report (to be uploaded) to have a better understanding of these parameters.
+
 ## Example
 For example,
 

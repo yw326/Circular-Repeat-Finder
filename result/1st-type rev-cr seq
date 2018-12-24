@@ -1,0 +1,6 @@
+>seq1
+AAGGTAAAGAACGCT
+>seq1-maximal
+AAGGTAAAGA
+>seq1-non-maximal
+ACGCT

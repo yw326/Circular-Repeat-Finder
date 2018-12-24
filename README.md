@@ -14,7 +14,9 @@ You should be getting an executable called mccreight.
 ### Command Line Options
 
 The executable has 2 required argument and 3 optional arguments:
-* First argument (required):  sequence file name. The file should contain the DNA sequence in which you search the circle repeats; the sequence
+* First argument (required):  sequence file name. The file should contain the DNA sequence in which you search the circle repeats; note that any characters that are not A, T, C, G are filtered out in the preprocessing.
+* Second argument (required): either "direct" or "reversed". If "direct", then the program will search direct circle repeats (of form "...s1s2...s2s1..."); if "reversed", the program will search reversed circle repeats (of form "...s1s2...s1^(-1)s2^(-1)...").
+
 
 ```
 Give the example

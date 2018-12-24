@@ -31,3 +31,26 @@ Broadly speaking, minimum maximal repeat length and minimum extension length can
 
 The above command searches for direct circle repeats in the sequence from file NC_021868.txt, with minimum maximal repeat length 10, minimum extension length 5, and allowed mismatch ration 10%.
 
+## Output Files
+There will be four output files: two sequence files and two index files. Recall that the circle repeat is either of form "...s1s2...s2s1..." (direct circle repeat) or "...s1s2...s1^(-1)s2^(-1)..." (reversed circle repeat). The file labeled with "1st type" contains the circle repeat found with s1 being maximal; the file labeled "2nd type" contains the circle repeat found with s2 being maximal.
+
+The files whose names end with "seq" contains contains the string of s1s2, s1, s2 for each circle repeat.
+
+The files whose names end with "circle repeat" contains the index info for each circle repeat, represented by 4-tuple (p1,p2,l1,l2).
+* p1: the start index of s1s2
+* p2: the start index of s2s1 (or s1^(-1)s2^(-1) if reverse)
+* l1: the length of s1s2 (i.e. |s1|+|s2|)
+* l2: the length of the maximal repeat (if s1 is maximal, then l2 = |s1|, else l2 = |s2|)
+
+For biology research purposes, it might be useful to just merge "1st" and "2nd" type files.
+
+
+
+
+
+
+
+
+
+
+

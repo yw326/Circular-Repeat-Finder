@@ -11,11 +11,10 @@ make
 You should be getting an executable called mccreight.
 
 
-### Installing
+### Command Line Options
 
-A step by step series of examples that tell you how to get a development env running
-
-Say what the step will be
+The executable has 2 required argument and 3 optional arguments:
+* First argument (required):  sequence file name. The file should contain the DNA sequence in which you search the circle repeats; the sequence
 
 ```
 Give the example

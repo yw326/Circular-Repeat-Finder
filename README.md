@@ -2,6 +2,8 @@
 
 The goal of this project is to provide an efficient algorithm to locate potential microDNAs within DNA sequences. Each potential microDNA is mathematically defined as a circle repeat, with form "...s1s2...s2s1..." (direct circle repeat), and "...s1s2...s1^(-1)s2^(-1)..." (reversed circle repeat). The program takes a sequence as input, and output four text files that contains the circle repeats sequences found by the algorithm and as well as their indices. The detailed description of the algorithm can be found in the pdf file (to be uploaded).
 
+The suffix tree construction code is based on https://github.com/shysaur/shysaur-suffixtrees.
+
 ## Getting Started
 
 Enter the project directory, and generate the executable from code by using 

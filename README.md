@@ -42,7 +42,7 @@ The files whose names end with "circle repeat" contains the index info for each 
 * l1: the length of s1s2 (i.e. |s1|+|s2|)
 * l2: the length of the maximal repeat (if s1 is maximal, then l2 = |s1|, else l2 = |s2|)
 
-For biology research purposes, it might be useful to just merge "1st" and "2nd" type files.
+For biology research purposes, it might be easier to analyze the result by merging "1st" and "2nd" type files.
 
 
 

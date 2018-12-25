@@ -230,14 +230,14 @@ void findCircleDuplication(tuple *result_list, int size, char *str, double pre_c
     printf("-------------------\n");
     
     //...s1s2...s2s1... with s2 being maximal
-    printf("Finding first type non-maximal cirlce repeat...\n");
+    printf("Finding second type non-maximal cirlce repeat...\n");
     
     FILE* first_repeat_index_file;
     FILE* first_repeat_seq_file;
     
     if (using_slurm == 0){
-        first_repeat_index_file = fopen("result/1st-type_circle_repeat", "w");
-        first_repeat_seq_file = fopen("result/1st-type cr seq", "w");
+        first_repeat_index_file = fopen("result/2nd-type_circle_repeat", "w");
+        first_repeat_seq_file = fopen("result/2nd-type cr seq", "w");
     }
     int c = 0;
     for (int i = 0; i < size; i++) {
@@ -360,13 +360,13 @@ void findCircleDuplication(tuple *result_list, int size, char *str, double pre_c
     
     
     printf("-------------------\n");
-    printf("Finding second type non-maximal cirlce repeat\n");
+    printf("Finding first type non-maximal cirlce repeat\n");
     FILE* second_repeat_index_file;
     FILE* second_repeat_seq_file;
     
     if (using_slurm == 0) {
-        second_repeat_index_file= fopen("result/2nd-type circle repeat", "w");
-        second_repeat_seq_file = fopen("result/2nd-type cr seq", "w");
+        second_repeat_index_file= fopen("result/1st-type circle repeat", "w");
+        second_repeat_seq_file = fopen("result/1st-type cr seq", "w");
     }
     
     //...s1s2...s2s1... with s1 being maximal
@@ -493,8 +493,8 @@ void findCircleDuplication(tuple *result_list, int size, char *str, double pre_c
     printf("The total number of KMP match is %d\n", c);
 
     //printf("Total number of maximal circle repeat count is %i\n", maximal_circle_repeat_count);
-    printf("the number of first type non-maximal cirlce repeat is %i \n", count1);
-    printf("the number of second type non-maximal cirlce repeat is %i\n", count2);
+    printf("the number of first type non-maximal cirlce repeat is %i \n", count2);
+    printf("the number of second type non-maximal cirlce repeat is %i\n", count1);
     
     
     //    printf("error count is %d\n", error_count);

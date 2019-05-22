@@ -5,9 +5,10 @@
 
 #include <stdio.h>
 #include "sfxtree.h"
-
-#endif /* maximal_repeat_h */
-
+#include "edit_distance.h"
+#include "KMP.h"
+#include "str_helper.h"
+#include "debug_helper.h"
 
 typedef struct {
     int p1;
@@ -22,16 +23,13 @@ typedef struct {
 } tuple;
 
 typedef struct {
-    int *arr;
-    short size;
-} arr_with_size;
+    tuple *result;
+    int size;
+} result_list;
 
-arr_with_size* KMP(char *txt, char *pat, int N, int M);
-void printDictionaryInfo(treenode_t *node);
-void printArcLabel(char *str, treenode_t *node);
-void printPathLabel(char *str, treenode_t *node);
-int convertCharToInt(char c);
-void outputRepeatedPairs(treenode_t *root, char *str, int threshold, int min_extension_len, float mis_perc, int reversed);
-char *returnSubstring(char *str, int start, int length);
-int levenshtein(char *s1, char *s2, int s1len, int s2len);
+#endif /* maximal_repeat_h */
+
+result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int reversed, int cat);
+void free_results(result_list *results);
+
 

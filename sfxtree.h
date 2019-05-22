@@ -23,7 +23,7 @@ typedef struct {
 }linked_list;
 
 typedef struct treenode_s {
-    linked_list node_dic[6];
+    linked_list node_dic[7];
     range_t arc_val;    /* substr of *arc* which led here. start==end==0 for root */
     range_t node_val;   /* substr of *path* which led here. start==end==0 for root */
     struct treenode_s *suffix_link;
@@ -57,6 +57,7 @@ treepoint_t fastScan(const char *str, const range_t *ss, treenode_t *tree);
 treepoint_t slowScan(const char *str, const range_t *ss, const treepoint_t *start);
 treenode_t *splitAtPoint(const treepoint_t *pos);
 treenode_t *newChild(treenode_t *parent, const range_t *node_val);
+treenode_t *suffixTree_mcCreight(const char *str);
 
 
 

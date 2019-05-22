@@ -1,0 +1,39 @@
+>seq0 1st section
+TTCTAAAATCAATGT
+>seq0 1st section s1
+TTCTAAAATC
+>seq0 1st section s2
+AATGT
+>seq0 2nd section
+GATTTTAGAAACATT
+>seq0 2nd section s1
+GATTTTAGAA
+>seq0 2nd section s2
+ACATT
+
+>seq1 1st section
+TTTCTAAGCTATCGT
+>seq1 1st section s1
+TTTCTAAGCT
+>seq1 1st section s2
+ATCGT
+>seq1 2nd section
+AGCTTAGAAAACGAT
+>seq1 2nd section s1
+AGCTTAGAAA
+>seq1 2nd section s2
+ACGAT
+
+>seq2 1st section
+ATGGATACTTCTAAAG
+>seq2 1st section s1
+ATGGATACTT
+>seq2 1st section s2
+CTAAAG
+>seq2 2nd section
+AAGTATCCATCTTTAG
+>seq2 2nd section s1
+AAGTATCCAT
+>seq2 2nd section s2
+CTTTAG
+

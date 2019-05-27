@@ -18,3 +18,4 @@
 
 void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, double mismatch_ratio, int min_extension_len, int max_check_len);
 
+

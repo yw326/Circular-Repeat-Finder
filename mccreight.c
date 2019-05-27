@@ -85,9 +85,9 @@ int main(int argc, char *argv[]) {
     
     // arg[1] = seq_file name
     // arg[2] = reverse or direct
-    // -r minimum maximal repeat length (optional, default 90)
-    // -e minimum extension length (optional, default 20)
+    // -r minimum maximal repeat length (optional, default 40)
     // -m mismatch percentage (optional, default 0.1)
+//     -s number of partitions (optional, default 1)
     
     // check required arguments
     
@@ -108,12 +108,12 @@ int main(int argc, char *argv[]) {
 
     //checking optional arguments
     int min_maximal_len_idx = -1;
-    int min_ext_len_idx = -1;
     int mis_perc_idx = -1;
-
-    int min_maximal_repeat_len = 90;
-    int min_extension_len = 20;
+//    int num_partitions_idx = -1;
+    
+    int min_maximal_repeat_len = 40;
     float mis_perc = 0.1;
+//    int num_partitions = 1;
 
     for (int i = 0; i < argc; i++) {
         if (strcmp(argv[i], "-r") == 0) {
@@ -131,21 +131,6 @@ int main(int argc, char *argv[]) {
             }
         }
 
-        if (strcmp(argv[i], "-e") == 0) {
-            if (i+1 >= argc) {
-                printf("Error: no argument found for minimum extension length\n");
-                return 1;
-            }
-
-            if (atoi(argv[i+1]) <= 0) {
-                printf("Error: invalid argument for minimum extension length\n");
-                return 1;
-            } else {
-                min_ext_len_idx = i+1;
-                min_extension_len = atoi(argv[min_ext_len_idx]);
-            }
-        }
-
         if (strcmp(argv[i], "-m") == 0) {
             if (i+1 >= argc) {
                 printf("Error: no argument found for allowed percentage of mismatch\n");
@@ -160,19 +145,34 @@ int main(int argc, char *argv[]) {
                 mis_perc = atof(argv[mis_perc_idx]);
             }
         }
+        
+//        if (strcmp(argv[i], "-s") == 0) {
+//            if (i+1 >= argc) {
+//                printf("Error: no argument found for number of partitions\n");
+//                return 1;
+//            }
+//
+//            if (atoi(argv[i+1]) < 1) {
+//                printf("Error: invalid argument for number of partitions\n");
+//                return 1;
+//            } else {
+//                num_partitions_idx = i+1;
+//                num_partitions = atoi(argv[mis_perc_idx]);
+//            }
+//        }
     }
 
     if (min_maximal_len_idx == -1) {
         printf("No minimum maximal repeat length found. Use default value %d\n", min_maximal_repeat_len);
     }
 
-    if (min_ext_len_idx == -1) {
-        printf("No minimum extension length found. Use default value %d\n", min_extension_len);
-    }
-
     if (mis_perc_idx == -1) {
         printf("No allowed mismatch percentage length found. Use default value %f\n", mis_perc);
     }
+    
+//    if (num_partitions_idx == -1) {
+//        printf("No number of partitions found. Use default value %d\n", num_partitions);
+//    }
 
     // set up sequence based on the reversed or direct
     char *str;
@@ -193,24 +193,25 @@ int main(int argc, char *argv[]) {
     result_list *results;
     if (strcmp(reverse_or_direct, "reversed") == 0) {
         results = outputRepeatedPairs(t, str, min_maximal_repeat_len, 1, 0);
-        findReverseApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_extension_len, 800);
+        findReverseApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_maximal_repeat_len, 800);
     }
 
     if (strcmp(reverse_or_direct, "direct") == 0) {
         results = outputRepeatedPairs(t, str, min_maximal_repeat_len, 0, 0);
-        findApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_extension_len, 800);
+        findApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_maximal_repeat_len, 800);
 
     }
 
     free_results(results);
     free(str);
     
-    //test_NC_021868_direct();
-//    test_NC_021868_reverse();
+//    char *seq = getStrFromFile("my_test.txt");
+//    printf("%s\n",seq);
+//    printf("seq length: %ld\n", strlen(seq));
+//    my_string* my_strings = partition_long_str(seq, 5);
+//    print_my_string(my_strings, 5);
+//    free_my_strings(my_strings, 5);
 //
-//output_two_halves_of_file("chr21_prefiltered.mask", "chr21_mask_first_half.txt", "chr21_mask_second_half.txt");
-//
-//    printf("%s\n", returnReverseComplementSubstring("ATCGGG", 0, 6));
 
     return 0;
 }

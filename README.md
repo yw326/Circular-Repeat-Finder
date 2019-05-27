@@ -4,6 +4,8 @@ The goal of this project is to provide an efficient algorithm to locate potentia
 
 The suffix tree construction code is based on https://github.com/shysaur/shysaur-suffixtrees.
 
+
+
 ## Getting Started
 
 Enter the project directory, and generate the executable from code by using 
@@ -11,6 +13,9 @@ Enter the project directory, and generate the executable from code by using
 make
 ```
 You should be getting an executable called mccreight.
+
+## Preprocessing using Tandem Repeat Finder
+It is important in the proprocessing step to remove (mask) the tandem repeat segments of the input DNA sequence using Tandem Repeat Finder (TRF) https://tandem.bu.edu/trf/trf.html, because tandem repeats trivially satifies the definition of circle repeats by definition. 
 
 
 ## Command Line Options
@@ -25,18 +30,20 @@ Broadly speaking, minimum maximal repeat length and minimum extension length can
 
 ## Example
 ```
-./mccreight test.txt direct -r 40 -m 0.1
+./mccreight you_seq_file.txt direct -r 40 -m 0.1
 ```
 
-The above command searches for direct circle repeats in the sequence from file test.txt, with minimum maximal repeat length 40, and allowed mismatch ration 10%.
+The above command searches for direct circle repeats in the sequence from file you_seq_file.txt, with minimum maximal repeat length 40, and allowed mismatch ration 10%.
 
-## Output Files
-There will be 2 output files: one sequence files and one index files. Recall that the circle repeat is either of form "...s1s2...s2s1..." (direct circle repeat) or "...s1s2...s1^(-1)s2^(-1)..." (reversed circle repeat). The file labeled with "1st type" contains the circle repeat found with s1 being maximal; the file labeled "2nd type" contains the circle repeat found with s2 being maximal.
+## Output File
+There will be an index file as output in the result folder. Each circle repeat is represented by a 8-tuple.
+* 1st: the start index of s1s2
+* 2nd: the start index of s2s1 (or s1's2' if reverse)
+* 3rd: length of first s1
+* 4th: length of first s2
+* 5th: length of second s1
+* 6th: length of second s2
+* 7th: mismatch ratio
+* 8th: length of s1s2 (which is the same as s2s1 or s1's2', even if the two s1's and two s2's are not exact match)
 
-The files whose names end with "seq" contains the string of s1s2, s1, s2 for each circle repeat.
 
-The files whose names end with "circle repeat" contains the index info for each circle repeat, represented by 4-tuple (p1,p2,l1,l2).
-* p1: the start index of s1s2
-* p2: the start index of s2s1 (or s1^(-1)s2^(-1) if reverse)
-* l1: the length of s1s2 (i.e. |s1|+|s2|)
-* l2: the length of the maximal repeat (if s1 is maximal, then l2 = |s1|, else l2 = |s2|)

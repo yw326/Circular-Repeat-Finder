@@ -61,7 +61,7 @@ int* get_result_minimizing_dist(char* s1, char* s2, char* s3, int len){
 
 
 
-void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, double mismatch_ratio, int min_extension_len, int max_check_length) {
+void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *str, double mismatch_ratio, int min_extension_len, int max_check_length, char* output_file_path, int task, int pound_idx, int partition_num1, int partition_num2, unsigned long partition_size) {
 
     int arr[size];
     unsigned long maximal_repeat_pair_count = 0;
@@ -71,7 +71,7 @@ void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, dou
         maximal_repeat_pair_count += arr[i];
     }
 
-    printf("-------------------\n");
+//    printf("-------------------\n");
     printf("The total number of maximal repeat pair count is %lu\n", maximal_repeat_pair_count);
 
     int min_check_length = min_extension_len;
@@ -79,20 +79,17 @@ void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, dou
     long count = 0;
     long strlength = strlen(str);
 
-    printf("-------------------\n");
+//    printf("-------------------\n");
     
-    FILE* index_file = fopen("result/index.txt", "w");
+    FILE* index_file = fopen(output_file_path, "w");
 //    FILE* seq_file = fopen("result/seq.txt", "w");
-    
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < arr[i]; j++) {
             
             triple t = my_result_list[i].result[j];
             int repeat_len = t.length;
-            int p1 = t.p1 < t.p2 ? t.p1 : t.p2;
-            int p2 = t.p1 > t.p2 ? t.p1 : t.p2;
+            int p1 = t.p1; int p2 = t.p2;
             
-
             /*
              first we look at right extension of first and left extension of second
              and try to maximal repeats
@@ -102,19 +99,23 @@ void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, dou
             int left_extension_start = p2-max_check_length;
             
             if (right_extension_start > left_extension_start) {
-                // to do: assign each extension half of the space in between
+                // too close: continue?
+                // or assign each extension half of the space in between?
                 continue;
             }
-
+            
+            
             char* first_right_extension = returnSubstring(str, right_extension_start, max_check_length);
             char* second_left_extension = returnSubstring(str, left_extension_start, max_check_length);
             char *concatenated_str = concatenate_two_str(first_right_extension, second_left_extension);
-            free(first_right_extension);
-            free(second_left_extension);
-
-            result_list *cat_results = outputRepeatedPairs(suffixTree_mcCreight(concatenated_str), concatenated_str, min_check_length, 0, 1);
+            int first_right_ext_len = strlen(first_right_extension);
+            int min_check_length = 5;
             
+            treenode_t *root = suffixTree_mcCreight(concatenated_str);
+            result_list *cat_results = outputRepeatedPairs(root, concatenated_str, min_check_length, 0, 1, first_right_ext_len);
+            freeTree(root);
             
+            free(first_right_extension); free(second_left_extension);
             free(concatenated_str);
 
             //iterate over repeated pairs in concatenated str
@@ -124,10 +125,7 @@ void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, dou
                     int cat_repeat_len = cat_t.length;
                     int cat_p1 = cat_t.p1 < cat_t.p2 ? cat_t.p1 : cat_t.p2;
                     int cat_p2 = cat_t.p1 > cat_t.p2 ? cat_t.p1 : cat_t.p2;
-                    
-                    //if newly found pair both in one section, break
-                    if (cat_p1 >= max_check_length || cat_p2 <= max_check_length) { continue; }
-                    
+
                     cat_p2 = cat_p2 - max_check_length - 1;
 
                     
@@ -146,7 +144,6 @@ void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, dou
                     if (l1-l2 > mismatch_ratio*total_len || l1-l2 < -mismatch_ratio*total_len) {
                         continue;
                     }
-                    
                     
 
                     char* A2 = returnSubstring(str, right_extension_start, l1);
@@ -172,49 +169,41 @@ void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, dou
                     int first_start = p1-(l2-i2);
                     int first_s1_len = l2-i2+repeat_len+i1;
                     int first_s2_len = l1 - i1 + cat_repeat_len + i2;
-//                    char* first_str = returnSubstring(str, first_start, l1+l2+exact_len);
-//                    char* first_s1 = returnSubstring(str, first_start, first_s1_len);
-//                    char* first_s2 = returnSubstring(str, first_start+first_s1_len, first_s2_len);
-                    
+ 
                     int second_start = left_extension_start+cat_p2-l1+i1;
                     int second_s2_len = l1 - i1 + cat_repeat_len + i2;
                     int second_s1_len = l2 - i2 + repeat_len + i1;
-//                    char* second_str = returnSubstring(str, second_start, l1+l2+exact_len);
-//                    char* second_s2 = returnSubstring(str, second_start, second_s2_len);
-//                    char* second_s1 = returnSubstring(str, second_start+second_s2_len, second_s1_len);
                     
-//                    int dist1 = levenshtein_val(first_s1, second_s1, first_s1_len, second_s1_len);
-//                    int dist2 = levenshtein_val(first_s2, second_s2, first_s2_len, second_s2_len);
-//                    printf("min1: %d\n", min1);
-//                    printf("min2: %d\n", min2);
-//                    printf("dist1: %d\n", dist1);
-//                    printf("dist2: %d\n", dist2);
                 
                     double actual_mismatch_ratio = (min1+min2) / ((double) (l1+l2+exact_len) );
                     if (actual_mismatch_ratio > mismatch_ratio) {
                         continue;
                     }
-//                    printf("%f\n", actual_mismatch_ratio);
                     
+//                    char* first_s1 = returnSubstring(str, first_start, first_s1_len);
+//                    char* first_s2 = returnSubstring(str, first_start+first_s1_len, first_s2_len);
+//                    char* second_s2 = returnSubstring(str, second_start, second_s2_len);
+//                    char* second_s1 = returnSubstring(str, second_start+second_s2_len, second_s1_len);
+//
+//                    int dist1 = levenshtein_val(first_s1, second_s1, first_s1_len, second_s1_len);
+//                    int dist2 = levenshtein_val(first_s2, second_s2, first_s2_len, second_s2_len);
+//                    //printf("------------------\n");
+////                    printf("min1: %d\n", min1);
+////                    printf("min2: %d\n", min2);
+////                    printf("dist1: %d\n", dist1);
+////                    printf("dist2: %d\n", dist2);
+                    
+                    
+                    if (task == 1) {
+                        first_start = to_seq_idx(first_start, partition_num1, partition_size);
+                        if (partition_num1 == partition_num2) {
+                            second_start = to_seq_idx(second_start, partition_num2, partition_size);
+                        } else {
+                            second_start = to_seq_idx(second_start - pound_idx - 1, partition_num2, partition_size);
+                        }
+                    }
+
                     fprintf(index_file, "(%d,%d,%d,%d,%d,%d,%f,%d)\n", first_start, second_start, first_s1_len, first_s2_len, second_s1_len, second_s2_len, actual_mismatch_ratio, l1+l2+exact_len);
-                    
-//                    fprintf(seq_file, ">seq%ld 1st section\n", count);
-//                    fprintf(seq_file, "%s\n", first_str);
-//                    fprintf(seq_file, ">seq%ld 1st section s1\n", count);
-//                    fprintf(seq_file, "%s\n", first_s1);
-//                    fprintf(seq_file, ">seq%ld 1st section s2\n", count);
-//                    fprintf(seq_file, "%s\n", first_s2);
-//                    free(first_str); free(first_s1); free(first_s2);
-//
-//
-//                    fprintf(seq_file, ">seq%ld 2nd section\n", count);
-//                    fprintf(seq_file, "%s\n", second_str);
-//                    fprintf(seq_file, ">seq%ld 2nd section s1\n", count);
-//                    fprintf(seq_file, "%s\n", second_s1);
-//                    fprintf(seq_file, ">seq%ld 2nd section s2\n", count);
-//                    fprintf(seq_file, "%s\n", second_s2);
-//                    free(second_str); free(second_s1); free(second_s2);
-//                    fprintf(seq_file, "\n");
 
                     count++;
                     
@@ -224,7 +213,6 @@ void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, dou
         }
     }
     
-//    fclose(seq_file);
     fclose(index_file);
     
     printf("the number of cirlce repeat is %ld \n", count);

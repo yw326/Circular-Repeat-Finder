@@ -24,8 +24,35 @@ char *getStrFromFile(char *file_name) {
     }
     
     str[n] = '\0';
+    fclose(fp);
     return str;
 }
+
+char *getComplementSeqFromFile(char *file_name) {
+    FILE *fp;
+    fp = fopen(file_name, "r");
+    
+    char *str = malloc(sizeof(char)*MAXCHAR);
+    int c;
+    int n = 0;
+    while ((c = fgetc(fp)) != EOF) {
+        if ((char)c == 'A') {
+            str[n++] = 'T';
+        } else if ((char)c == 'T') {
+            str[n++] = 'A';
+        } else if ((char)c == 'C') {
+            str[n++] = 'G';
+        } else if ((char)c == 'G') {
+            str[n++] = 'C';
+        }
+    }
+    
+    str[n] = '\0';
+    fclose(fp);
+
+    return str;
+}
+
 
 char *getConcantenatedReversedStrFromFile(char *file_name) {
     FILE *fp;
@@ -49,6 +76,8 @@ char *getConcantenatedReversedStrFromFile(char *file_name) {
     }
     
     str[n] = '\0';
+    fclose(fp);
+
     return str;
 }
 
@@ -83,6 +112,7 @@ char *getConcantenatedReversedComplementStrFromFile(char *file_name) {
         }
     }
     str[n] = '\0';
+    fclose(fp);
 
     return str;
 }
@@ -98,6 +128,7 @@ void prefilter_file(char *file_name, char *output_file_name) {
     fprintf(f, ">prefiltered \n");
     fprintf(f, "%s", s);
     free(s);
+    fclose(f);
 }
 
 // output first half and second half of the sequence into two files respectively
@@ -127,3 +158,21 @@ void output_two_halves_of_file(char *file_name, char *output_name1, char *output
     
     free(s);
 }
+
+
+int count_num_files_in_dir(char* dir) {
+    int file_count = 0;
+    DIR * dirp;
+    struct dirent * entry;
+    
+    dirp = opendir(dir);
+    while ((entry = readdir(dirp)) != NULL) {
+        if (entry->d_type == DT_REG && strcmp(".DS_Store", entry->d_name) != 0 ) {
+            file_count++;
+        }
+    }
+    closedir(dirp);
+    return file_count;
+}
+
+

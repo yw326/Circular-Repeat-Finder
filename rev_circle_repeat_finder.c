@@ -23,11 +23,13 @@ int* get_result_minimizing_dist2(char* s1, char* s2, char* s3, int len){
         result[1] = 0;
         return result;
     }
+    char* s1_rev = reverse_str(s1);
     char* s2_rev = reverse_str(s2);
+//    char* s1_rev = returnReverseComplementSubstring(s1, 0, len);
+//    char* s2_rev = returnReverseComplementSubstring(s2, 0, len);
     int* v1 = levenshtein(s1, s2_rev, len, len);
     free(s2_rev);
     
-    char* s1_rev = reverse_str(s1);
     int* v2_rev = levenshtein(s1_rev, s3, len, len);
     free(s1_rev);
     
@@ -58,7 +60,7 @@ int* get_result_minimizing_dist2(char* s1, char* s2, char* s3, int len){
 
 
 
-void findReverseApproximateCircleRepeat(tuple *my_result_list, int size, char *str, double mismatch_ratio, int min_check_length, int max_check_length) {
+void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, char *str, double mismatch_ratio, int min_check_length, int max_check_length, char* output_file_path, int task, int pound_idx, int partition_num1, int partition_num2, unsigned long partition_size) {
     
     int arr[size];
     unsigned long maximal_repeat_pair_count = 0;
@@ -66,48 +68,41 @@ void findReverseApproximateCircleRepeat(tuple *my_result_list, int size, char *s
     for (int i = 0; i < size; i++) {
         arr[i] = my_result_list[i].size;
         maximal_repeat_pair_count += arr[i];
-        
     }
     
     printf("-------------------\n");
     printf("The total number of maximal reverse pair count is %lu\n", maximal_repeat_pair_count);
     
-    FILE* index_file = fopen("result/rev_index.txt", "w");
-    FILE* seq_file = fopen("result/rev_seq.txt", "w");
-
+    FILE* index_file = fopen(output_file_path, "w");
     long count = 0;
     long strlength = strlen(str);
 
-    
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < arr[i]; j++) {
-            
             triple t = my_result_list[i].result[j];
             int repeat_len = t.length;
-            int p1 = t.p1 < t.p2 ? t.p1 : t.p2;
-            int p2 = t.p1 > t.p2 ? t.p1 : t.p2;
-            
+            int p1 = t.p1; int p2 = t.p2;
 
             int right_extension_start1 = p1+repeat_len;
             int right_extension_start2 = p2+repeat_len;
             
-            if (right_extension_start2 + max_check_length > strlength || right_extension_start1 + max_check_length > p2) {
+            int right_limit = task == 1 ? strlength : strlength/2;
+            if (right_extension_start2 + max_check_length > right_limit || right_extension_start1 + max_check_length > p2) {
                 continue;
             }
-            
+
 
             char* first_right_extension = returnSubstring(str, right_extension_start1, max_check_length);
-//            char* second_right_extension_rev = returnReversedSubstring(str, right_extension_start2, max_check_length);
-
             char* second_right_extension_rev = returnReverseComplementSubstring(str, right_extension_start2, max_check_length);
             char *concatenated_str = concatenate_two_str(first_right_extension, second_right_extension_rev);
 
             long cat_strlength = strlen(concatenated_str);
-            free(first_right_extension);
-            free(second_right_extension_rev);
-
-            result_list *cat_results = outputRepeatedPairs(suffixTree_mcCreight(concatenated_str), concatenated_str, min_check_length, 0, 1);
-
+            long first_right_ext_len = strlen(first_right_extension);
+            
+            treenode_t *root = suffixTree_mcCreight(concatenated_str);
+//            int min_check_length = 5;
+            result_list *cat_results = outputRepeatedPairs(root, concatenated_str, min_check_length, 1, 1, first_right_ext_len);
+            freeTree(root);
             free(concatenated_str);
 
             for (int m = 0; m < cat_results->size; m++) {
@@ -119,13 +114,18 @@ void findReverseApproximateCircleRepeat(tuple *my_result_list, int size, char *s
                     int cat_p1 = cat_t.p1 < cat_t.p2 ? cat_t.p1 : cat_t.p2;
                     int cat_p2 = cat_t.p1 > cat_t.p2 ? cat_t.p1 : cat_t.p2;
                     
+                    
+                    
                     //if newly found pair both in one section, continue
                     if (cat_p1 >= max_check_length || cat_p2 <= max_check_length) {
                         continue;
                     }
+                    
+                    
 
-                    cat_p2 = cat_strlength - 1 - cat_p2 - cat_repeat_len;
-
+//                    cat_p2 = cat_strlength - 1 - cat_p2 - cat_repeat_len;
+                    cat_p2 = cat_p2 - max_check_length - 1;
+                    
                     
                     // we have ... A1 s1 A2 s2 A3 ...B1 s1^(-1) B2 s2^(-1) B3...
                     // rev_distance(A2,B3) + rev_distance(A2,B1) (elementwise), take minimum index i1
@@ -136,6 +136,7 @@ void findReverseApproximateCircleRepeat(tuple *my_result_list, int size, char *s
                     int l2 = cat_p2;
                     int exact_len = cat_repeat_len + repeat_len;
                     int total_len = exact_len*2 + l1*3 + l2*3;
+                    
                     
                     // if A2 and B2 length difference exceed threshold
                     // then edit distance must also exceed threshold
@@ -172,50 +173,42 @@ void findReverseApproximateCircleRepeat(tuple *my_result_list, int size, char *s
                     int first_start = p1 - i2;
                     int first_s1_len = i2 + repeat_len + i1;
                     int first_s2_len = l1 - i1 + cat_repeat_len + (l2 - i2);
-                    char* first_str = returnSubstring(str, first_start, l1+l2+exact_len);
-                    char* first_s1 = returnSubstring(str, first_start, first_s1_len);
-                    char* first_s2 = returnSubstring(str, first_start+first_s1_len, first_s2_len);
                     
                     int second_start = p2 - i1;
                     int second_s1_len = first_s1_len;
                     int second_s2_len = first_s2_len;
-                    char* second_str = returnSubstring(str, second_start, l1+l2+exact_len);
-                    char* second_s1 = returnSubstring(str, second_start, second_s1_len);
-                    char* second_s2 = returnSubstring(str, second_start+second_s1_len, second_s2_len);
                     
+//                    char* first_str = returnSubstring(str, first_start, l1+l2+exact_len);
+//                    char* first_s1 = returnSubstring(str, first_start, first_s1_len);
+//                    char* first_s2 = returnSubstring(str, first_start+first_s1_len, first_s2_len);
+//                    char* second_str = returnSubstring(str, second_start, l1+l2+exact_len);
+//                    char* second_s1 = returnSubstring(str, second_start, second_s1_len);
+//                    char* second_s2 = returnSubstring(str, second_start+second_s1_len, second_s2_len);
 //                    int dist1 = levenshtein_val(first_s1, returnReverseComplementSubstring(str, second_start, second_s1_len), first_s1_len, second_s1_len);
 //                    int dist2 = levenshtein_val(first_s2, returnReverseComplementSubstring(str, second_start+second_s1_len, second_s2_len), first_s2_len, second_s2_len);
 //                    printf("%f\n", (double) (dist1+dist2)/(l1+l2+exact_len));
                     
+                    if (task == 1) {
+                        first_start = to_seq_idx(first_start, partition_num1, partition_size);
+                        if (partition_num1 == partition_num2) {
+                            second_start = to_seq_idx(second_start, partition_num2, partition_size);
+                        } else {
+                            second_start = to_seq_idx(second_start - pound_idx - 1, partition_num2, partition_size);
+                        }
+                    }
+
+
                     fprintf(index_file, "(%d,%d,%d,%d,%d,%d,%f,%d)\n", first_start, second_start, first_s1_len, first_s2_len, second_s1_len, second_s2_len, actual_mismatch_ratio, l1+l2+exact_len);
-                    
-                    fprintf(seq_file, ">seq%ld 1st section\n", count);
-                    fprintf(seq_file, "%s\n", first_str);
-                    fprintf(seq_file, ">seq%ld 1st section s1\n", count);
-                    fprintf(seq_file, "%s\n", first_s1);
-                    fprintf(seq_file, ">seq%ld 1st section s2\n", count);
-                    fprintf(seq_file, "%s\n", first_s2);
-                    free(first_str); free(first_s1); free(first_s2);
-                    
-                    
-                    fprintf(seq_file, ">seq%ld 2nd section\n", count);
-                    fprintf(seq_file, "%s\n", second_str);
-                    fprintf(seq_file, ">seq%ld 2nd section s1\n", count);
-                    fprintf(seq_file, "%s\n", second_s1);
-                    fprintf(seq_file, ">seq%ld 2nd section s2\n", count);
-                    fprintf(seq_file, "%s\n", second_s2);
-                    free(second_str); free(second_s1); free(second_s2);
-                    fprintf(seq_file, "\n");
                     
                     count++;
                     
                 }
             }
             free_results(cat_results);
+            free(first_right_extension); free(second_right_extension_rev);
         }
     }
 
-    fclose(seq_file);
     fclose(index_file);
 
     

@@ -125,3 +125,38 @@ void printNodeInfo(treenode_t *node, char *str) {
 }
 
 
+void check_direct_pair_distance(char* seq, int start1, int start2, int first_s1_len, int second_s2_len, int s1s2_len) {
+    
+    int first_s2_len = s1s2_len - first_s1_len;
+    int second_s1_len = s1s2_len - second_s2_len;
+    char* first_s1 = returnSubstring(seq, start1, first_s1_len);
+    char* first_s2 = returnSubstring(seq, start1+first_s1_len, first_s2_len);
+    char* second_s2 = returnSubstring(seq, start2, second_s2_len);
+    char* second_s1 = returnSubstring(seq, start2+second_s2_len, second_s1_len);
+    free(first_s1); free(first_s2); free(second_s1); free(second_s2);
+    
+    int dist1 = levenshtein_val(first_s1, second_s1, first_s1_len, second_s1_len);
+    int dist2 = levenshtein_val(first_s2, second_s2, first_s2_len, second_s2_len);
+    
+    printf("the mismatch rate is %f\n", (double) (dist1+dist2) / s1s2_len);
+}
+
+void check_rc_pair_distance(char* seq, int start1, int start2, int first_s1_len, int second_s2_len, int s1s2_len) {
+    
+    int first_s2_len = s1s2_len - first_s1_len;
+    int second_s1_len = s1s2_len - second_s2_len;
+    char* first_s1 = returnSubstring(seq, start1, first_s1_len);
+    char* first_s2 = returnSubstring(seq, start1+first_s1_len, first_s2_len);
+    char* second_s1 = returnSubstring(seq, start2, second_s1_len);
+    char* second_s2 = returnSubstring(seq, start2+second_s1_len, second_s2_len);
+    char* second_s1_rc = returnReverseComplementSubstring(second_s1, 0, second_s1_len);
+    char* second_s2_rc = returnReverseComplementSubstring(second_s2, 0, second_s2_len);
+
+    int dist1 = levenshtein_val(first_s1, second_s1_rc, first_s1_len, second_s1_len);
+    int dist2 = levenshtein_val(first_s2, second_s2_rc, first_s2_len, second_s2_len);
+    
+    free(first_s1); free(first_s2); free(second_s1); free(second_s2);
+    free(second_s1_rc); free(second_s2_rc);
+    
+    printf("the mismatch rate is %f\n", (double) (dist1+dist2) / s1s2_len);
+}

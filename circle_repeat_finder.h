@@ -16,6 +16,6 @@
 
 #endif /* circle_repeat_finder_h */
 
-void findApproximateCircleRepeat(tuple *my_result_list, int size, char *str, double mismatch_ratio, int min_extension_len, int max_check_len);
+void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *str, double mismatch_ratio, int min_extension_len, int max_check_len, char* output_file_path, int task, int pound_idx, int partition_num1, int partition_num2, unsigned long partition_size);
 
 

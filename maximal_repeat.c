@@ -9,7 +9,7 @@
 
 int maximal_circle_repeat_count = 0;
 int reverse_maximal_repeat_count = 0;
-short linked_list_num = 6;
+short linked_list_num = 6; // A,T,C,G,$ and # if concatenated
 int min_extension_check = 20;
 
 
@@ -20,25 +20,9 @@ int min_extension_check = 20;
 //MARK: maximal repeat finding helpers
 //only used for reversed repeat finding
 int past_pairs_min_index[10000000];
+int past_pairs_max_index[10000000];
 int past_pairs_len = 0;
-tuple formCartisianProduct(linked_list list1[linked_list_num], linked_list list2[linked_list_num], int length, int strlen, int reversed) {
-    
-    //    printf("----------------------\n");
-    //    for (int i = 0; i < 5; i++) {
-    //        if (list1[i].start != NULL) {
-    //            printf("list1[%d] = {%d}\n", i, list1[i].start->data);
-    //        }
-    //
-    //        if (list2[i].start != NULL) {
-    //            printf("list2[%d] = {%d}\n", i, list2[i].start->data);
-    //        }
-    //    }
-    
-    //    if (list1[1].start != NULL) {
-    //        if (list1[1].start->data == 14 && list1[1].start->next != NULL) {
-    //            printf("haha %d\n", list1[1].start->next->data);
-    //        }
-    //    }
+triple_list formCartisianProduct(linked_list list1[linked_list_num], linked_list list2[linked_list_num], int length, unsigned long strlen, int reversed, int cat, int pound_idx) {
     
     int max_count = 5000000;
     triple *result = malloc(sizeof(triple)*max_count);
@@ -59,55 +43,72 @@ tuple formCartisianProduct(linked_list list1[linked_list_num], linked_list list2
                         break;
                     }
                     
+                    int a1 = start1->data < start2->data ? start1->data : start2->data;
+                    int a2 = start1->data > start2->data ? start1->data : start2->data;
+                    
+                    if (a1 == a2) {
+                        start2 = start2->next;
+                        continue;
+                    }
                     
                     if (reversed == 1) {
-                        
-                        int half_str_len_minus_1 = (strlen - 1)/2;
-                        int a1 = start1->data < start2->data ? start1->data : start2->data;
-                        int a2 = start1->data > start2->data ? start1->data : start2->data;
-                        
-                        if (a1 < half_str_len_minus_1 && a2 > half_str_len_minus_1) {
-                            
-                            a2 = strlen - length - a2;
-                            
-                            if (a1 == a2) {
-                                start2 = start2->next;
-                                continue;
-                            }
-                            
-                            int min = a1 < a2 ? a1 : a2;
-                            
-                            int equal = 0;
-                            for (int k = 0; k < past_pairs_len; k++) {
-                                if (min == past_pairs_min_index[k]) {
-                                    equal = 1;
-                                    break;
+                        if (a1 < pound_idx && a2 > pound_idx) {
+                            if (cat == 0) {
+                                a2 = strlen - length - a2;
+                                if (a1 == a2) {
+                                    start2 = start2->next;
+                                    continue;
                                 }
+                                
+                                int min = a1 < a2 ? a1 : a2;
+                                int max = a1 < a2 ? a2 : a1;
+                                
+                                // check if the pair is already found
+                                int equal = 0;
+                                for (int k = 0; k < past_pairs_len; k++) {
+                                    if (min == past_pairs_min_index[k] && max == past_pairs_max_index[k]) {
+                                        equal = 1;
+                                        break;
+                                    }
+                                }
+                                
+                                if (equal == 1) {
+                                    start2 = start2->next;
+                                    continue;
+                                }
+                                
+                                triple t = {min, max, length};
+                                result[count] = t;
+                                count++;
+                                
+                                past_pairs_min_index[past_pairs_len] = min;
+                                past_pairs_max_index[past_pairs_len] = max;
+                                past_pairs_len++;
+                            } else {
+
+                                a2 = strlen - length - a2 + pound_idx;
+                                triple t = {a1, a2, length};
+                                result[count] = t;
+                                count++;
                             }
-                            
-                            if (equal == 1) {
-                                start2 = start2->next;
-                                continue;
-                            }
-                            
-                            triple t = {a1, a2, length};
-                            result[count] = t;
-                            count++;
-                          
-                            past_pairs_min_index[past_pairs_len] = min;
-                            past_pairs_len++;
-                            
-                            //printf("(%d,%d,%d)\n", a1, a2, length);
                         }
-                        
                     }
                     
                     
                     if (reversed == 0) {
-                        //printf("(%d, %d, %d)\n", start1->data, start2->data, length);
-                        triple t = {start1->data, start2->data, length};
-                        result[count] = t;
-                        count++;
+                        if (cat == 0) {
+                            triple t = {a1, a2, length};
+                            result[count] = t;
+                            count++;
+                            
+                        } else {
+                            if (a1 < pound_idx && a2 > pound_idx) {
+                                triple t = {a1, a2, length};
+                                result[count] = t;
+                                count++;
+                            }
+                        }
+                        
                     }
                     
                     start2 = start2->next;
@@ -118,15 +119,14 @@ tuple formCartisianProduct(linked_list list1[linked_list_num], linked_list list2
         }
     }
     
+    // return the correct sized triple-list instead of max-sized (saving some space)
     triple *result2 = malloc(sizeof(triple)*count);
-    
     for (int i = 0; i < count; i++) {
         result2[i] = result[i];
     }
-    
     free(result);
     
-    tuple t = {result2, count};
+    triple_list t = {result2, count};
     
     return t;
 }
@@ -150,31 +150,16 @@ linked_list *mergeLinkedLists(linked_list lists[linked_list_num][linked_list_num
         merged_list[i].start = NULL;
         merged_list[i].end = NULL;
     }
-    
-    //    for (int i = 0; i < linked_list_num; i++) {
-    //        for (int j = 0; j < 5; j++) {
-    //            printf("list[%d][%d] start:%d end:%d\n", i, j, lists[i][j].start->data, lists[i][j].end->data);
-    //        }
-    //    }
-    
-    
+
     for (int i = 0; i < children_count; i++) {
         if (i > exclusion) {
             for (int j = 0; j < linked_list_num; j++) {
                 linked_list l = lists[i][j];
                 if (l.start == NULL) { continue; }
                 if (merged_list[j].start == NULL) {
-                    //                    merged_list[j].start = malloc(sizeof(Node));
                     merged_list[j].start = l.start;
-                    
-                    //                    if (l.end != NULL) {
-                    //                        merged_list[j].end = malloc(sizeof(Node));
-                    //                    }
                     merged_list[j].end = l.end;
-                    
                 } else if (merged_list[j].end == NULL) {
-                    
-                    //merged_list[j].end = malloc(sizeof(Node));
                     if (l.end == NULL) {
                         merged_list[j].end = l.start;
                         merged_list[j].start->next = merged_list[j].end;
@@ -182,9 +167,7 @@ linked_list *mergeLinkedLists(linked_list lists[linked_list_num][linked_list_num
                         merged_list[j].end = l.end;
                         merged_list[j].start->next = l.start;
                     }
-                    
                 } else {
-                    //merged_list[j].end->next = malloc(sizeof(linked_list));
                     merged_list[j].end->next = l.start;
                     
                     if (l.end == NULL) {
@@ -200,6 +183,7 @@ linked_list *mergeLinkedLists(linked_list lists[linked_list_num][linked_list_num
     
     return merged_list;
 }
+
 
 void freeLinkedList(linked_list merged_list[linked_list_num]) {
     
@@ -222,15 +206,14 @@ void freeLinkedList(linked_list merged_list[linked_list_num]) {
 
 
 
-
 //MARK: major function
-result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int reversed, int cat) {
+result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int reversed, int cat, int pound_idx) {
     if (reversed == 0 && cat == 0) {
         // A,T,C,G,$
         linked_list_num = 5;
     } else {
-        // A,T,C,G,$,#,!
-        linked_list_num = 7;
+        // A,T,C,G,$,#
+        linked_list_num = 6;
     }
     
     unsigned long len = strlen(str);
@@ -263,7 +246,7 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
     
     long max_result_len = len*2;
     result_list *results = malloc(sizeof(result_list));
-    results->result = malloc(sizeof(tuple)*max_result_len);
+    results->result = malloc(sizeof(triple_list)*max_result_len);
     int results_len = 0;
 
     while (len_s != 0) {
@@ -279,11 +262,8 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
             
             treenode_t *child = node->first_child;
             while (child != NULL) {
-                //printDictionaryInfo(child);
                 freeLinkedList(child->node_dic);
-                treenode_t *child_ptr = child;
                 child = child->next_sibling;
-                free(child_ptr);
             }
             len_s--;
             continue;
@@ -308,33 +288,10 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
             node->node_dic[left_char_value].start = malloc(sizeof(Node));
             node->node_dic[left_char_value].start->data = start;
             node->node_dic[left_char_value].start->next = NULL;
-            
-            //printDictionaryInfo(node);
-            
-            //            if (start == 0) {
-            //                printf("%d", left_char_value);
-            //                printf("hahahaha \n");
-            //            }
-            
-            //            printf("%d ", start);
-            //            printf("%c\n", str[start - 1]);
-            //            printPathLabel(str, s[j]);
+
             
         } else {
-            
-            //            int c = 0;
-            //            treenode_t *node_child = node->first_child;
-            //            while (node_child != NULL) {
-            //
-            ////                printf("-----------------------\n");
-            ////                //printPathLabel(str, node_child);
-            //                printDictionaryInfo(node_child);
-            //
-            //                node_child = node_child->next_sibling;
-            //                c++;
-            //            }
-            
-            
+
             int number_of_children = numberOfChildren(node);
             
             linked_list children_lists[number_of_children][linked_list_num];
@@ -352,15 +309,13 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
             //add the repeat pairs to result
             for (int m = 0; m < number_of_children; m++) {
                 linked_list *list2 = mergeLinkedLists(children_lists, m, number_of_children);
-                tuple result = formCartisianProduct(children_lists[m], list2, str_len, len, reversed);
+                triple_list result = formCartisianProduct(children_lists[m], list2, str_len, len, reversed, cat, pound_idx);
                 
                 if (result.size != 0) {
                     results->result[results_len] = result;
                     results_len++;
                 }
-                
-                //                freeLinkedList(list2);
-                //                free(list2);
+                free(list2);
             }
             
             treenode_t *child = node->first_child;
@@ -372,27 +327,20 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
                     
                     if (node->node_dic[k].start == NULL) {
                         // no entry has been recorded here, so create list same as the child entry
-                        node->node_dic[k].start = malloc(sizeof(Node));
-                        node->node_dic[k].start = child->node_dic[k].start;
                         
-                        if (child->node_dic[k].end != NULL) {
-                            node->node_dic[k].end = malloc(sizeof(Node));
-                        }
+                        node->node_dic[k].start = child->node_dic[k].start;
                         node->node_dic[k].end = child->node_dic[k].end;
                         
                     } else if (node->node_dic[k].end == NULL) {
                         // only start node created (i.e. one item in the linked list and end node not created)
                         // check children lists
                         
-                        node->node_dic[k].end = malloc(sizeof(Node));
                         if (child->node_dic[k].end == NULL) {
                             // if children also one has one node (end node not created)
                             // 1. set end to child->start
                             // 2. set start->next to end
                             node->node_dic[k].end = child->node_dic[k].start;
                             node->node_dic[k].start->next = node->node_dic[k].end;
-                            
-                            
                         } else {
                             // if children has more then one children (end node created)
                             // 1. set end node to child->end
@@ -407,15 +355,13 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
                         // set node->end->next to child->start
                         // check child node
                         node->node_dic[k].end->next = child->node_dic[k].start;
-                        
                         if (child->node_dic[k].end == NULL) {
                             node->node_dic[k].end = child->node_dic[k].start;
                         } else {
                             node->node_dic[k].end = child->node_dic[k].end;
                         }
                     }
-                    //                    free(child->node_dic[k].start);
-                    //                    free(child->node_dic[k].end);
+
                 }
                 
                 child = child->next_sibling;

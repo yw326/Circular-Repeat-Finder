@@ -12,13 +12,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <memory.h>
-
-#endif /* str_helper_h */
+#include <ctype.h>
+#include "task.h"
 
 typedef struct {
     unsigned long length;
     char* str;
 } my_string;
+
+#endif /* str_helper_h */
+
+
 
 char *returnSubstring(char *str, int start, int length);
 char *returnReversedSubstring(char *str, int start, int length);
@@ -33,3 +37,6 @@ my_string* partition_long_str(char* seq, int num_partitions);
 void free_my_strings(my_string *my_strings, int num_my_strings);
 void print_my_string(my_string *my_strings, int num_my_strings);
 unsigned long to_seq_idx(unsigned long partition_idx, int partition_num, unsigned long partition_size);
+
+task_set *parse_task_arg(char* arg, int max_num_partitions);
+void free_task_set(task_set *ts);

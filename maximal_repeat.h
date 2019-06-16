@@ -16,20 +16,19 @@ typedef struct {
     short length;
 }triple;
 
-
 typedef struct {
     triple *result;
     short size;
-} tuple;
+} triple_list;
 
 typedef struct {
-    tuple *result;
+    triple_list *result;
     int size;
 } result_list;
 
 #endif /* maximal_repeat_h */
 
-result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int reversed, int cat);
+result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int reversed, int cat, int pound_idx);
 void free_results(result_list *results);
 
 

@@ -13,6 +13,7 @@
 #include <string.h>
 #include "sfxtree.h"
 #include "edit_distance.h"
+#include "str_helper.h"
 
 #endif /* debug_helper_h */
 
@@ -22,3 +23,6 @@ void printPathLabel(char *str, treenode_t *node);
 void printNodeInfo(treenode_t *node, char *str);
 int convertCharToInt(char c);
 char convertIntToChar(int i);
+
+void check_direct_pair_distance(char* seq, int start1, int start2, int first_s1_len, int second_s2_len, int s1s2_len);
+void check_rc_pair_distance(char* seq, int start1, int start2, int first_s1_len, int second_s2_len, int s1s2_len);

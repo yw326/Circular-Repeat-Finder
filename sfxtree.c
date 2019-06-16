@@ -42,8 +42,7 @@ void printTree(const char *str, const treenode_t *root)
 }
 
 
-void freeTree(treenode_t *root)
-{
+void freeTree(treenode_t *root) {
     if (root->first_child)
         freeTree(root->first_child);
     if (root->next_sibling)

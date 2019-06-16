@@ -12,17 +12,32 @@ Enter the project directory, and generate the executable from code by using
 ```
 make
 ```
-You should be getting an executable called mccreight.
+You should be getting 2 executables: partition and mccreight.
 
 ## Preprocessing using Tandem Repeat Finder
 It is important in the proprocessing step to remove (mask) the tandem repeat segments of the input DNA sequence using Tandem Repeat Finder (TRF) https://tandem.bu.edu/trf/trf.html, because tandem repeats trivially satifies the definition of circle repeats by definition. 
 
+## Command Line Options for partition
+The partition executable takes 3 arguments:
+* 1st argument: sequence file name
+* 2nd argument: number of partitions
+* 2nd argument: name of the directory where the splitted sequence files are stored
 
-## Command Line Options
+This executable is used as a preprocessing step to for the -t option. It is often used when the input sequence is long, to speed up the searching through parallelization or to deal with memory issue.
 
-The executable has 2 required argument and 2 optional arguments:
-* First argument (required):  sequence file name. The file should contain the DNA sequence in which you search the circle repeats; note that any characters that are not A, T, C, G are filtered out in the preprocessing.
-* Second argument (required): either "direct" or "reversed". If "direct", then the program will search direct circle repeats (of form "...s1s2...s2s1..."); if "reversed", the program will search reversed circle repeats (of form "...s1s2...s1^(-1)s2^(-1)...").
+## Command Line Options for mccreight
+
+The executable has 1 required argument, 1 argument from either -t or -s, and 2 optional arguments:
+* First argument (required): either "direct" or "reversed". 
+<!---
+If "direct", then the program will search direct circle repeats (of form "...s1s2...s2s1..."); if "reversed", the program will search reversed circle repeats (of form "...s1s2...s1^(-1)s2^(-1)...").
+-->
+
+* -s sequence file name. 
+<!---
+The file should contain the DNA sequence in which you search the circle repeats; note that any characters that are not A, T, C, G are filtered out in the preprocessing.
+-->
+* -t partition_file_dir task_numbers
 * Optional argument: "-r minimum_maximal_repeat_length". Default value of minimum maximal repeat length is 40.
 * Optional argument: "-m percentage_mismatch_allowed". Default value of percentage mismatch is 0.1
 

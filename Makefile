@@ -7,8 +7,8 @@ OBJCFLAGS	+= $(CFLAGS)
 
 OBJDIR	= obj
 
-_DEPS	= sfxtree.h maximal_repeat.h file_helper.h debug_helper.h edit_distance.h KMP.h str_helper.h circle_repeat_finder.h rev_circle_repeat_finder.h
-_SOURCE	= sfxtree.c maximal_repeat.c file_helper.c debug_helper.c edit_distance.c KMP.c str_helper.c circle_repeat_finder.c rev_circle_repeat_finder.c
+_DEPS	= sfxtree.h maximal_repeat.h file_helper.h debug_helper.h edit_distance.h KMP.h str_helper.h circle_repeat_finder.h rev_circle_repeat_finder.h task.h
+_SOURCE	= sfxtree.c maximal_repeat.c file_helper.c debug_helper.c edit_distance.c KMP.c str_helper.c circle_repeat_finder.c rev_circle_repeat_finder.c task.c
 
 
 
@@ -18,7 +18,7 @@ OBJ	= $(patsubst %, $(OBJDIR)/%, $(_SOURCE:.c=.o))
 .PHONY:	all
 .PHONY:	clean
 
-all:	$(OBJDIR) mccreight 
+all:	$(OBJDIR) mccreight partition
 
 $(OBJDIR):	
 	mkdir -p $(OBJDIR)
@@ -26,14 +26,15 @@ $(OBJDIR):
 
 mccreight:	$(OBJ) $(OBJDIR)/mccreight.o
 	$(CC) -o $@ $^ $(CFLAGS)
-	#$(CC) $(ASAN_FLAGS) -o $@ $^ $(CFLAGS)
 
+partition:	$(OBJ) $(OBJDIR)/partition.o
+	$(CC) -o $@ $^ $(CFLAGS)
 
 $(OBJDIR)/%.o:	%.c $(DEPS)
-	$(CC) -std=c99 -c -o $@ $< $(CFLAGS)
+	$(CC) -std=gnu99 -c -o $@ $< $(CFLAGS)
 
 $(OBJDIR)/%.o:	%.m $(DEPS)
 	$(CC) -c -o $@ $< $(OBJCFLAGS)
 
 clean:
-	rm -f $(OBJDIR)/*.o naive mccreight ukkonen
+	rm -f $(OBJDIR)/*.o mccreight partition

@@ -153,7 +153,7 @@ int main(int argc, char *argv[]) {
         
         if (strcmp(argv[i], "-t") == 0) {
             if (i+3 >= argc) {
-                printf("Error: not enough arguments found for number of partitions\n");
+                printf("Error: not enough arguments found for -t\n");
                 return 1;
             }
             task_dir = argv[i+1];
@@ -164,6 +164,12 @@ int main(int argc, char *argv[]) {
             if (stat(task_dir, &st) == -1) {
                 printf("Error: task directory not found.\n");
                 return 1;
+            }
+            if (task_arg[0] == '-') {
+                if (task_arg[1] == 's' || task_arg[1] == 't' || task_arg[1] == 'r' || task_arg[1] == 'm' || task_arg[1] == 'e') {
+                    printf("Error: not enough arguments found for -t\n");
+                    return 1;
+                }
             }
 
         }

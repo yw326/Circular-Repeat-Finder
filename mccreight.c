@@ -152,7 +152,7 @@ int main(int argc, char *argv[]) {
         }
         
         if (strcmp(argv[i], "-t") == 0) {
-            if (i+3 >= argc) {
+            if (i+2 >= argc) {
                 printf("Error: not enough arguments found for -t\n");
                 return 1;
             }

@@ -108,9 +108,7 @@ void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *st
             char* first_right_extension = returnSubstring(str, right_extension_start, max_check_length);
             char* second_left_extension = returnSubstring(str, left_extension_start, max_check_length);
             char *concatenated_str = concatenate_two_str(first_right_extension, second_left_extension);
-            int first_right_ext_len = strlen(first_right_extension);
-            int min_check_length = 5;
-            
+            int first_right_ext_len = strlen(first_right_extension);            
             treenode_t *root = suffixTree_mcCreight(concatenated_str);
             result_list *cat_results = outputRepeatedPairs(root, concatenated_str, min_check_length, 0, 1, first_right_ext_len);
             freeTree(root);

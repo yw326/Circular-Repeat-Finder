@@ -82,7 +82,6 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
             triple t = my_result_list[i].result[j];
             int repeat_len = t.length;
             int p1 = t.p1; int p2 = t.p2;
-
             int right_extension_start1 = p1+repeat_len;
             int right_extension_start2 = p2+repeat_len;
             
@@ -95,11 +94,10 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
             char* first_right_extension = returnSubstring(str, right_extension_start1, max_check_length);
             char* second_right_extension_rev = returnReverseComplementSubstring(str, right_extension_start2, max_check_length);
             char *concatenated_str = concatenate_two_str(first_right_extension, second_right_extension_rev);
-
             long cat_strlength = strlen(concatenated_str);
             long first_right_ext_len = strlen(first_right_extension);
-            
             treenode_t *root = suffixTree_mcCreight(concatenated_str);
+            
 //            int min_check_length = 5;
             result_list *cat_results = outputRepeatedPairs(root, concatenated_str, min_check_length, 1, 1, first_right_ext_len);
             freeTree(root);
@@ -196,7 +194,6 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
                             second_start = to_seq_idx(second_start - pound_idx - 1, partition_num2, partition_size);
                         }
                     }
-
 
                     fprintf(index_file, "(%d,%d,%d,%d,%d,%d,%f,%d)\n", first_start, second_start, first_s1_len, first_s2_len, second_s1_len, second_s2_len, actual_mismatch_ratio, l1+l2+exact_len);
                     

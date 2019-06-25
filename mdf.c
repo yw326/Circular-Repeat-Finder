@@ -12,65 +12,236 @@
 #include <sys/stat.h>
 
 
-// MARK: suffix tree
-
-
-
-
-
-
-
 //MARK: tests
 
-//void test_NC_021868_direct() {
-//    char *str = getStrFromFile("NC_021868.txt");
-//    printf("string length is %lu\n", strlen(str));
-//
-//    treenode_t *t = suffixTree_mcCreight(str);
-//    result_list *results = outputRepeatedPairs(t, str, 10, 0);
-//    findApproximateCircleRepeat(results->result, results->size, str, 0.1, 5, 10);
-//
-//
-//    //findCircleDuplication(results->result, results->size, str, 0, 0.1, 5);
-//
-////    printf("%s\n", returnSubstring(str, 25542, 15));
-////    printf("%s\n", returnSubstring(str, 32029, 15));
-////    printf("%d\n", levenshtein("CAATTAGAGC", "CAATTTCTTC", 10, 10));
-//
-//    free(str);
-//    free_results(results);
-//
-//    /*
-//     number of maximal should be 3658
-//     number of 1st-type should be >= 9 (depending on approxiamte threshold)
-//     number of 2nd-type should be >= 5 (depending on approxiamte threshold)
-//     */
-//}
 
-//void test_NC_021868_reverse() {
-//    //char *str = getConcantenatedReversedStrFromFile("NC_021868.txt");
-//    char *str = getConcantenatedReversedComplementStrFromFile("NC_021868.txt");
-//    printf("string length is %lu\n", strlen(str));
-//
-//    treenode_t *t = suffixTree_mcCreight(str);
-//    result_list *results = outputRepeatedPairs(t, str, 10, 1);
-//    findReverseApproximateCircleRepeat(results->result, results->size, str, 0, 5, 10);
-//
-//
-//    //findCircleDuplication(results->result, results->size, str, 0, 0.1, 5);
-//
-//    //    printf("%s\n", returnSubstring(str, 25542, 15));
-//    //    printf("%s\n", returnSubstring(str, 32029, 15));
-//    //    printf("%d\n", levenshtein("CAATTAGAGC", "CAATTTCTTC", 10, 10));
-//
-//    free(str);
-//    free_results(results);
-//
-//}
+int is_in_result_list(result_list* r, triple t) {
+    for (int i = 0; i < r->size; i++) {
+        for (int j = 0; j < r->result[i].size; j++) {
+            triple t2 = r->result[i].result[j];
+            if (t.p1 == t2.p1 && t.p2 == t2.p2 && t.length == t2.length) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+int is_complement_char(char a, char b) {
+    if (a == 'A' && b == 'T') {
+        return 1;
+    } else if (a == 'T' && b == 'A') {
+        return 1;
+    } else if (a == 'C' && b == 'G') {
+        return 1;
+    } else if (a == 'G' && b == 'C') {
+        return 1;
+    }
+    return 0;
+}
+
+void check_maximal_rc_result(result_list *r, char* str) {
+    int not_equal_count = 0;
+    int not_maximal_count = 0;
+    
+    for (int i = 0; i < r->size; i++) {
+        for (int j = 0; j < r->result[i].size; j++) {
+            triple t = r->result[i].result[j];
+            char* s1 = returnSubstring(str, t.p1, t.length);
+            char* s2_rc = returnReverseComplementSubstring(str, t.p2, t.length);
+            if (!checkTwoStringEqual(s1, s2_rc, t.length)) {
+                not_equal_count++;
+            }
+            if ( is_complement_char(str[t.p1-1], str[t.p2+t.length]) || is_complement_char(str[t.p2-1], str[t.p1+t.length])) {
+                not_maximal_count++;
+            }
+            free(s1); free(s2_rc);
+        }
+    }
+    printf("Not equal count: %d\n", not_equal_count);
+    printf("Not maximal count: %d\n", not_maximal_count);
+//    printf("Number of maximal repeated pairs found: %d\n", count_num_results(r));
+}
+
+result_list *convert_to_absolute_idx(result_list *r, int s1_num, int s2_num, int partition_len, int second_idx_offset) {
+    for (int i = 0; i < r->size; i++) {
+        for (int j = 0; j < r->result[i].size; j++) {
+            r->result[i].result[j].p1 = to_seq_idx(r->result[i].result[j].p1, s1_num, partition_len);
+            r->result[i].result[j].p2 = to_seq_idx(r->result[i].result[j].p2-second_idx_offset, s2_num, partition_len);
+        }
+    }
+    return r;
+}
+
+int count_num_results(result_list *r) {
+    int count = 0;
+    for (int i = 0; i < r->size; i++) {
+        count += r->result[i].size;
+    }
+    return count;
+}
+
+
+triple* remove_from_rl(result_list *r, result_list **remove, int remove_rl_cnt, int partition_size) {
+    triple *final_list = malloc(sizeof(triple)*10000);
+    int count = 0;
+    int count2 = 0;
+    for (int i = 0; i < r->size; i++) {
+        for (int j = 0; j < r->result[i].size; j++) {
+            triple t = r->result[i].result[j];
+            int present = 0;
+            for (int k = 0; k < remove_rl_cnt; k++) {
+                if (is_in_result_list(remove[k], t) == 1) {
+                    present = 1;
+                }
+            }
+            
+            if (present == 0) {
+                final_list[count].p1 = t.p1;
+                final_list[count].p2 = t.p2;
+                final_list[count].length = t.length;
+                
+                // don't need to worry about last partition -- always pass
+                int dist1_to_conj = partition_size - (t.p1 % partition_size);
+                int dist2_to_conj = partition_size - (t.p2 % partition_size);
+                if (dist1_to_conj < t.length || dist2_to_conj < t.length ) {
+                    count2++;
+                } else {
+                    printf("(%d,%d,%d)\n", t.p1, t.p2, t.length);
+                }
+                count++;
+            }
+        }
+    }
+    
+    printf("diff is : %d\n",count);
+    printf("number of pairs miseed due to occuring at conjunction is : %d\n",count2);
+    return final_list;
+}
+
+
+void test_NC_021868_direct() {
+    char *s1 = getStrFromFile("NC_021868_split/partition-1.txt");
+    char *s2 = getStrFromFile("NC_021868_split/partition-2.txt");
+    char *s3 = getStrFromFile("NC_021868_split/partition-3.txt");
+    char* seq = getStrFromFile("NC_021868.txt");
+    char* seq12 = concatenate_two_str(s1, s2);
+    char* seq13 = concatenate_two_str(s1, s3);
+    char* seq23 = concatenate_two_str(s2, s3);
+    
+    treenode_t *t = suffixTree_ukkonen(seq);
+    treenode_t *t1 = suffixTree_ukkonen(s1);
+    treenode_t *t2 = suffixTree_ukkonen(s2);
+    treenode_t *t3 = suffixTree_ukkonen(s3);
+    treenode_t *t12 = suffixTree_ukkonen(seq12);
+    treenode_t *t13 = suffixTree_ukkonen(seq13);
+    treenode_t *t23 = suffixTree_ukkonen(seq23);
+    
+    int p = strlen(s1);
+    result_list *results_seq = outputRepeatedPairs(t, seq, 10, 0, 0, -1);
+    result_list *results_1 = convert_to_absolute_idx(outputRepeatedPairs(t1, s1, 10, 0, 0, -1),1,1,p,0);
+    result_list *results_2 = convert_to_absolute_idx(outputRepeatedPairs(t12, seq12, 10, 0, 1, p),1,2,p,p+1);
+    result_list *results_3 = convert_to_absolute_idx(outputRepeatedPairs(t13, seq13, 10, 0, 1, p),1,3,p,p+1);
+    result_list *results_4 = convert_to_absolute_idx(outputRepeatedPairs(t2, s2, 10, 0, 0, -1),2,2,p,0);
+    result_list *results_5 = convert_to_absolute_idx(outputRepeatedPairs(t23, seq23, 10, 0, 1, p),2,3,p,p+1);
+    result_list *results_6 = convert_to_absolute_idx(outputRepeatedPairs(t3, s3, 10, 0, 0, -1),3,3,p,0);
+    
+    
+    int count1 = count_num_results(results_seq);
+    int count2 = count_num_results(results_1) + count_num_results(results_2) + count_num_results(results_3) + count_num_results(results_4) + count_num_results(results_5) + count_num_results(results_6);
+    
+    result_list **results_par = malloc(sizeof(result_list)*6);
+    results_par[0] = results_1;
+    results_par[1] = results_2;
+    results_par[2] = results_3;
+    results_par[3] = results_4;
+    results_par[4] = results_5;
+    results_par[5] = results_6;
+    remove_from_rl(results_seq, results_par, 6, p);
+    printf("The total number of maximal repeats (without partition) is %d\n", count1);
+    printf("The total number of maximal repeats (with partition) is %d\n", count2);
+    printf("partition size is %d\n", p);
+    
+    freeTree(t); freeTree(t1); freeTree(t2); freeTree(t3); freeTree(t12); freeTree(t13); freeTree(t23);
+    free(s1); free(s2); free(s3); free(seq); free(seq12); free(seq13); free(seq23);
+    free_results(results_seq);
+    free_results(results_1); free_results(results_2);
+    free_results(results_3); free_results(results_4); free_results(results_5);
+    free_results(results_6);
+}
+
+
+
+
+void test_NC_021868_reverse() {
+    char *s1_f = getStrFromFile("NC_021868_split/partition-1.txt");
+    char *s2_f = getStrFromFile("NC_021868_split/partition-2.txt");
+    char *s3_f = getStrFromFile("NC_021868_split/partition-3.txt");
+    char *s2_rc = returnReverseComplementSubstring(s2_f, 0, strlen(s2_f));
+    char *s3_rc = returnReverseComplementSubstring(s3_f, 0, strlen(s3_f));
+    int p = strlen(s1_f);
+    
+    char* seq12 = concatenate_two_str(s1_f, s2_rc);
+    char* seq13 = concatenate_two_str(s1_f, s3_rc);
+    char* seq23 = concatenate_two_str(s2_f, s3_rc);
+    free(s1_f); free(s2_f); free(s3_f); free(s2_rc); free(s3_rc);
+
+    char *s1 = getConcantenatedReversedComplementStrFromFile("NC_021868_split/partition-1.txt");
+    char *s2 = getConcantenatedReversedComplementStrFromFile("NC_021868_split/partition-2.txt");
+    char *s3 = getConcantenatedReversedComplementStrFromFile("NC_021868_split/partition-3.txt");
+
+    char* seq = getConcantenatedReversedComplementStrFromFile("NC_021868.txt");
+    treenode_t *t = suffixTree_mcCreight(seq);
+    treenode_t *t1 = suffixTree_ukkonen(s1);
+    treenode_t *t2 = suffixTree_ukkonen(s2);
+    treenode_t *t3 = suffixTree_ukkonen(s3);
+    treenode_t *t12 = suffixTree_ukkonen(seq12);
+    treenode_t *t13 = suffixTree_ukkonen(seq13);
+    treenode_t *t23 = suffixTree_ukkonen(seq23);
+
+    // (15065,19225,10)
+    result_list *results_seq = outputRepeatedPairs(t, seq, 10, 1, 0, strlen(seq)/2);
+    result_list *results_1 = convert_to_absolute_idx(outputRepeatedPairs(t1, s1, 10, 1, 0, p),1,1,p,0);
+    result_list *results_2 = convert_to_absolute_idx(outputRepeatedPairs(t12, seq12, 10, 1, 1, p),1,2,p,p+1);
+    result_list *results_3 = convert_to_absolute_idx(outputRepeatedPairs(t13, seq13, 10, 1, 1, p),1,3,p,p+1);
+    result_list *results_4 = convert_to_absolute_idx(outputRepeatedPairs(t2, s2, 10, 1, 0, p),2,2,p,0);
+    result_list *results_5 = convert_to_absolute_idx(outputRepeatedPairs(t23, seq23, 10, 1, 1, p),2,3,p,p+1);
+    result_list *results_6 = convert_to_absolute_idx(outputRepeatedPairs(t3, s3, 10, 1, 0, p),3,3,p,0);
+
+    int count1 = count_num_results(results_seq);
+    int count2 = count_num_results(results_1) + count_num_results(results_2) + count_num_results(results_3) + count_num_results(results_4) + count_num_results(results_5) + count_num_results(results_6);
+
+    result_list **results_par = malloc(sizeof(result_list)*6);
+    results_par[0] = results_1;
+    results_par[1] = results_2;
+    results_par[2] = results_3;
+    results_par[3] = results_4;
+    results_par[4] = results_5;
+    results_par[5] = results_6;
+    remove_from_rl(results_seq, results_par, 6, p);
+    printf("The total number of maximal repeats (without partition) is %d\n", count1);
+    printf("The total number of maximal repeats (with partition) is %d\n", count2);
+    printf("partition size is %d\n", p);
+
+    freeTree(t);
+    freeTree(t1); freeTree(t2); freeTree(t3); freeTree(t12); freeTree(t13); freeTree(t23);
+    free(s1); free(s2); free(s3); free(seq12); free(seq13); free(seq23);
+    free(seq);
+    free_results(results_seq);
+    free_results(results_1); free_results(results_2);
+    free_results(results_3); free_results(results_4); free_results(results_5);
+    free_results(results_6);
+}
 
 //MARK: main
 
 int main(int argc, char *argv[]) {
+//    char* seq = getStrFromFile("NC_021868.txt");
+//    check_direct_pair_distance(seq, 44822, 48847, 13, 7, 20);
+//    check_rc_pair_distance(seq, 47295, 47325, 12, 8, 22);
+
+    //test_NC_021868_direct();
+//    test_NC_021868_reverse();
     
     // arg[1] = reverse or direct
     // -s seq_file name (optional)
@@ -214,7 +385,7 @@ int main(int argc, char *argv[]) {
             results = outputRepeatedPairs(t, str, min_maximal_repeat_len, 0, 0, -1);
             findApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_maximal_repeat_len, extension_len, "result/index.txt", 0, -1, -1, -1, -1);
         }
-        
+                
         freeTree(t);
         free_results(results);
         free(str);
@@ -266,12 +437,11 @@ int main(int argc, char *argv[]) {
             char task_output_file_path[200];
             snprintf(task_output_file_path, 200, "%s/task-%d-result(%d,%d).txt", task_output_dir, task_num, task_num1, task_num2);
             
-            
             // setup sequence
             char* seq;
             char* seq1 = getStrFromFile(path_buf1);
             int pound_idx = strlen(seq1);
-            
+//            printf("partition size: %d\n", pound_idx);
             
             int cat = task_num1 == task_num2 ? 0 : 1;
             

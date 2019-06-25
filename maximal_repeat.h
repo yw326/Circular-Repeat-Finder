@@ -6,9 +6,18 @@
 #include <stdio.h>
 #include "sfxtree.h"
 #include "edit_distance.h"
-#include "KMP.h"
 #include "str_helper.h"
 #include "debug_helper.h"
+
+typedef struct {
+    int *arr;
+    short size;
+} arr_with_size;
+
+typedef struct {
+    arr_with_size *arrs;
+    short size;
+} arr_list;
 
 typedef struct {
     int p1;

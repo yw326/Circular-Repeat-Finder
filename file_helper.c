@@ -23,7 +23,8 @@ char *getStrFromFile(char *file_name) {
         }
     }
     
-    str[n] = '\0';
+    str[n+1] = '\0';
+
     fclose(fp);
     return str;
 }

@@ -77,12 +77,9 @@ void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *st
     int min_check_length = min_extension_len;
 
     long count = 0;
-    long strlength = strlen(str);
-
-//    printf("-------------------\n");
+//    long strlength = strlen(str);
     
     FILE* index_file = fopen(output_file_path, "w");
-//    FILE* seq_file = fopen("result/seq.txt", "w");
     for (int i = 0; i < size; i++) {
         for (int j = 0; j < arr[i]; j++) {
             
@@ -110,6 +107,7 @@ void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *st
             char *concatenated_str = concatenate_two_str(first_right_extension, second_left_extension);
             int first_right_ext_len = strlen(first_right_extension);            
             treenode_t *root = suffixTree_mcCreight(concatenated_str);
+//            int min_check_length = 5;
             result_list *cat_results = outputRepeatedPairs(root, concatenated_str, min_check_length, 0, 1, first_right_ext_len);
             freeTree(root);
             

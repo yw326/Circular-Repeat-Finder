@@ -9,6 +9,7 @@
 #ifndef debug_helper_h
 #define debug_helper_h
 
+//#include "maximal_repeat.h"
 #include <stdio.h>
 #include <string.h>
 #include "sfxtree.h"
@@ -23,6 +24,8 @@ void printPathLabel(char *str, treenode_t *node);
 void printNodeInfo(treenode_t *node, char *str);
 int convertCharToInt(char c);
 char convertIntToChar(int i);
+void print_linkedlist(Node *start);
+int is_in_linkedlist(Node *start, int target);
 
 void check_direct_pair_distance(char* seq, int start1, int start2, int first_s1_len, int second_s2_len, int s1s2_len);
 void check_rc_pair_distance(char* seq, int start1, int start2, int first_s1_len, int second_s2_len, int s1s2_len);

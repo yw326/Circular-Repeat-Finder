@@ -57,8 +57,8 @@ void printArcLabel(char *str, treenode_t *node) {
     }
     s[end - start] = '\0';
     
-    printf("Arc start: %d, end: %d ", start, end);
-    printf("%s\n", s);
+    printf("Arc start: %d, end: %d \n", start, end);
+//    printf("%s\n", s);
 //    if (end == strlen(str) + 1) {
 //        printf("%s\n", s);
 //    } else {
@@ -76,8 +76,8 @@ void printPathLabel(char *str, treenode_t *node) {
         s[i - start] = str[i];
     }
     s[end - start] = '\0';
-    printf("Path start: %d, end: %d ", start, end);
-    printf("%s\n", s);
+    printf("Path start: %d, end: %d \n", start, end);
+//    printf("%s\n", s);
     
 //    if (end == strlen(str) + 1) {
 //        printf("%s$\n", s);
@@ -124,21 +124,50 @@ void printNodeInfo(treenode_t *node, char *str) {
     printPathLabel(str, node);
 }
 
+void print_linkedlist(Node *start) {
+    if (start == NULL) {
+        printf("NULL\n");
+        return;
+    } else {
+        printf("%d->", start->data);
+    }
+    Node *n = start;
+    while (n->next != NULL) {
+        printf("%d->", n->next->data);
+        n = n->next;
+    }
+    printf("NULL\n");
+}
+
+int is_in_linkedlist(Node *start, int target) {
+    Node *n = start;
+    while (n != NULL) {
+        if (n->data == target) {
+            return 1;
+        }
+        n = n->next;
+    }
+    return 0;
+}
+
+
+
 
 void check_direct_pair_distance(char* seq, int start1, int start2, int first_s1_len, int second_s2_len, int s1s2_len) {
-    
     int first_s2_len = s1s2_len - first_s1_len;
     int second_s1_len = s1s2_len - second_s2_len;
     char* first_s1 = returnSubstring(seq, start1, first_s1_len);
     char* first_s2 = returnSubstring(seq, start1+first_s1_len, first_s2_len);
     char* second_s2 = returnSubstring(seq, start2, second_s2_len);
     char* second_s1 = returnSubstring(seq, start2+second_s2_len, second_s1_len);
-    free(first_s1); free(first_s2); free(second_s1); free(second_s2);
-    
+
     int dist1 = levenshtein_val(first_s1, second_s1, first_s1_len, second_s1_len);
     int dist2 = levenshtein_val(first_s2, second_s2, first_s2_len, second_s2_len);
     
     printf("the mismatch rate is %f\n", (double) (dist1+dist2) / s1s2_len);
+    free(first_s1); free(first_s2); free(second_s1); free(second_s2);
+
+
 }
 
 void check_rc_pair_distance(char* seq, int start1, int start2, int first_s1_len, int second_s2_len, int s1s2_len) {
@@ -160,3 +189,55 @@ void check_rc_pair_distance(char* seq, int start1, int start2, int first_s1_len,
     
     printf("the mismatch rate is %f\n", (double) (dist1+dist2) / s1s2_len);
 }
+
+
+
+//void print_maximal_repeats_to_file(result_list *r, char* file_name) {
+//    FILE* index_file = fopen(file_name, "w");
+//    for (int i = 0; i < r->size; i++) {
+//        for (int j = 0; j < r->result[i].size; j++) {
+//            triple t = r->result[i].result[j];
+//            fprintf(index_file, "(%d,%d,%d)\n", t.p1, t.p2, t.length);
+//        }
+//    }
+//    fclose(index_file);
+//}
+//
+//void check_maximal_repeats_result(result_list *r, char* str) {
+//    int not_equal_count = 0;
+//    int not_maximal_count = 0;
+//
+//    for (int i = 0; i < r->size; i++) {
+//        for (int j = 0; j < r->result[i].size; j++) {
+//            triple t = r->result[i].result[j];
+//            char* s1 = returnSubstring(str, t.p1, t.length);
+//            char* s2 = returnSubstring(str, t.p2, t.length);
+//            if (!checkTwoStringEqual(s1, s2, t.length)) {
+//                not_equal_count++;
+//            }
+//            if (str[t.p1-1] == str[t.p2-1] || str[t.p1+t.length] == str[t.p2+t.length]) {
+//                //                printf("------------\n");
+//                //                printf("%s\n",s1);
+//                //                printf("%s\n",s2);
+//                //                char* s1_extend = returnSubstring(str, t.p1-1, t.length+2);
+//                //                char* s2_extend = returnSubstring(str, t.p2-1, t.length+2);
+//                //                printf("%s\n",s1_extend);
+//                //                printf("%s\n",s2_extend);
+//                not_maximal_count++;
+//                //                free(s1_extend); free(s2_extend);
+//            }
+//            free(s1); free(s2);
+//        }
+//    }
+//    printf("Not equal count: %d\n", not_equal_count);
+//    printf("Not maximal count: %d\n", not_maximal_count);
+//    printf("Number of maximal repeated pairs found: %d\n", count_num_results(r));
+//}
+//
+
+
+
+
+
+
+

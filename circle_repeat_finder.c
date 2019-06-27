@@ -107,7 +107,6 @@ void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *st
             char *concatenated_str = concatenate_two_str(first_right_extension, second_left_extension);
             int first_right_ext_len = strlen(first_right_extension);            
             treenode_t *root = suffixTree_mcCreight(concatenated_str);
-//            int min_check_length = 5;
             result_list *cat_results = outputRepeatedPairs(root, concatenated_str, min_check_length, 0, 1, first_right_ext_len);
             freeTree(root);
             
@@ -121,10 +120,15 @@ void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *st
                     int cat_repeat_len = cat_t.length;
                     int cat_p1 = cat_t.p1 < cat_t.p2 ? cat_t.p1 : cat_t.p2;
                     int cat_p2 = cat_t.p1 > cat_t.p2 ? cat_t.p1 : cat_t.p2;
-
+//                    printf("---------\n");
+//                    printf("%s\n", returnSubstring(concatenated_str, cat_p1, cat_repeat_len));
+//                    printf("%s\n", returnSubstring(concatenated_str, cat_p2, cat_repeat_len));
+                    
                     cat_p2 = cat_p2 - max_check_length - 1;
 
-                    
+//                    printf("%s\n", returnSubstring(str, right_extension_start+cat_p1, cat_repeat_len));
+//                    printf("%s\n", returnSubstring(str, left_extension_start+cat_p2, cat_repeat_len));
+
                     // we have ... A1 s1 A2 s2 A3 ...B1 s2 B2 s1 B3...
                     // distance(A2,B3) + rev_distance(A2,B1) (elementwise), take minimum index i1
                     // distance(B2,A3) + rev_distance(B2,A1) (elementwise), taken minimum index i2
@@ -176,11 +180,11 @@ void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *st
                         continue;
                     }
                     
-//                    char* first_s1 = returnSubstring(str, first_start, first_s1_len);
-//                    char* first_s2 = returnSubstring(str, first_start+first_s1_len, first_s2_len);
-//                    char* second_s2 = returnSubstring(str, second_start, second_s2_len);
-//                    char* second_s1 = returnSubstring(str, second_start+second_s2_len, second_s1_len);
-//
+                    char* first_s1 = returnSubstring(str, first_start, first_s1_len);
+                    char* first_s2 = returnSubstring(str, first_start+first_s1_len, first_s2_len);
+                    char* second_s2 = returnSubstring(str, second_start, second_s2_len);
+                    char* second_s1 = returnSubstring(str, second_start+second_s2_len, second_s1_len);
+
 //                    int dist1 = levenshtein_val(first_s1, second_s1, first_s1_len, second_s1_len);
 //                    int dist2 = levenshtein_val(first_s2, second_s2, first_s2_len, second_s2_len);
 //                    //printf("------------------\n");
@@ -189,6 +193,21 @@ void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *st
 ////                    printf("dist1: %d\n", dist1);
 ////                    printf("dist2: %d\n", dist2);
                     
+//                    if (first_start == 585) {
+//                        printf("--------\n");
+//                        
+//                        printf("%s\n", first_s1);
+//                        printf("%s\n", first_s2);
+//                        printf("%s\n", second_s1);
+//                        printf("%s\n", second_s2);
+//                        
+//                        printf("%ld\n",partition_size);
+//                        printf("%d\n",pound_idx);
+//                        printf("%d\n",second_start);
+//
+//                        
+//                    }
+
                     
                     if (task == 1) {
                         first_start = to_seq_idx(first_start, partition_num1, partition_size);
@@ -198,6 +217,7 @@ void findApproximateCircleRepeat(triple_list *my_result_list, int size, char *st
                             second_start = to_seq_idx(second_start - pound_idx - 1, partition_num2, partition_size);
                         }
                     }
+                    
 
                     fprintf(index_file, "(%d,%d,%d,%d,%d,%d,%f,%d)\n", first_start, second_start, first_s1_len, first_s2_len, second_s1_len, second_s2_len, actual_mismatch_ratio, l1+l2+exact_len);
 

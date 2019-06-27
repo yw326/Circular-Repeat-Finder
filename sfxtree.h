@@ -20,11 +20,11 @@ typedef struct Node{
 typedef struct {
     Node *start;
     Node *end;
-    short size;
+//    short size;
 }linked_list;
 
 typedef struct treenode_s {
-    linked_list node_dic[6];
+    linked_list node_dic[7];
     range_t arc_val;    /* substr of *arc* which led here. start==end==0 for root */
     range_t node_val;   /* substr of *path* which led here. start==end==0 for root */
     struct treenode_s *suffix_link;

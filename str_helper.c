@@ -75,7 +75,7 @@ char *returnReverseComplementSubstring(char *str, int start, int length) {
 char *concatenate_two_str(char *s1, char *s2) {
     unsigned long s1_len = strlen(s1);
     unsigned long s2_len = strlen(s2);
-    char *str3 = malloc(sizeof(char)*(3 + s1_len + s2_len));
+    char *str3 = malloc(sizeof(char)*(2 + s1_len + s2_len));
     for (int i = 0; i < s1_len; i++) {
         str3[i] = s1[i];
     }
@@ -84,8 +84,8 @@ char *concatenate_two_str(char *s1, char *s2) {
     for (int i = 0; i < s2_len; i++) {
         str3[i+s1_len+1] = s2[i];
     }
-    str3[s1_len+s2_len+1] = '$';
-    str3[s1_len+s2_len+2] = '\0';
+//    str3[s1_len+s2_len+1] = '$';
+    str3[s1_len+s2_len+1] = '\0';
 
     
     return str3;

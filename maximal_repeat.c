@@ -103,7 +103,7 @@ triple_list formCartisianProduct(linked_list list1[linked_list_num], arr_list *l
                                 past_pairs_len++;
                             } else {
                                 
-                                a2 = strlen - length - a2 + pound_idx;
+                                a2 = strlen - length - a2 + pound_idx + 1;
                                 triple t = {a1, a2, length};
                                 result[count] = t;
                                 count++;
@@ -203,29 +203,16 @@ arr_list *mergeLinkedLists(linked_list lists[linked_list_num][linked_list_num], 
 void freeLinkedList(linked_list merged_list[linked_list_num]) {
     for (int i = 0; i < linked_list_num; i++) {
         
-        if (merged_list[i].size == 0) { continue; }
-        
-//        int count = 0;
-//        printf("a\n");
+//        if (merged_list[i].size == 0) { continue; }
         Node *tmp = merged_list[i].start;
-//        printf("%d\n",merged_list[i].size);
-//        print_linkedlist(merged_list[i].start);
-        
         if (tmp == NULL) { continue; }
-
+        
         while (merged_list[i].start->next != NULL) {
-//            printf("c\n");
             tmp = merged_list[i].start;
             merged_list[i].start = merged_list[i].start->next;
-            
-//            count++;
-            
             free(tmp);
-//            printf("d\n");
         }
         free(merged_list[i].start);
-//        printf("e\n");
-
     }
 }
 
@@ -283,15 +270,35 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
         for (int m = 0; m < linked_list_num; m++) {
             node->node_dic[m].start = NULL;
             node->node_dic[m].end = NULL;
-            node->node_dic[m].size = 0;
+//            node->node_dic[m].size = 0;
         }
         
         int str_len = node->node_val.end - node->node_val.start;
         if (str_len < threshold) {
             treenode_t *child = node->first_child;
+            
+            int num_children = 0;
             while (child != NULL) {
+//                if (len_s - 1 == 0) {
+//                    break;
+//                }
+                
+                if (numberOfChildren(node) == 1) {
+                    break;
+                }
+                
+//                printf("y1\n");
+//                printf("len_s - 1: %d\n", len_s-1);
+//                printf("number of children: %d\n", numberOfChildren(node));
+//                if (node->parent) {
+//                    printf("paren'ts number of children: %d\n", numberOfChildren(node->parent));
+//                }
+//                printDictionaryInfo(child, linked_list_num);
+                num_children++;
                 freeLinkedList(child->node_dic);
+//                printf("y2\n");
                 child = child->next_sibling;
+                
             }
 
             len_s--;
@@ -308,7 +315,7 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
             // if it's a leaf, create a list with a start node containting the string start position
             int start = node->node_val.start;
             int left_char_value = convertCharToInt(str[start - 1]);
-            if (start == 0) { left_char_value = 6; }
+            if (start == 0) { left_char_value = 0; }
             
             
             
@@ -316,7 +323,7 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
             node->node_dic[left_char_value].start->data = start;
             node->node_dic[left_char_value].start->next = NULL;
             node->node_dic[left_char_value].end = NULL;
-            node->node_dic[left_char_value].size = 1;
+//            node->node_dic[left_char_value].size = 1;
 
             
             
@@ -360,7 +367,8 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
                         // no entry has been recorded here, so create list same as the child entry
                         node->node_dic[k].start = child->node_dic[k].start;
                         node->node_dic[k].end = child->node_dic[k].end;
-                        
+//                        node->node_dic[k].size = child->node_dic[k].size;
+
                         
                     } else if (node->node_dic[k].end == NULL) {
                         // only start node created (i.e. one item in the linked list and end node not created)
@@ -383,7 +391,8 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
                             node->node_dic[k].end->next = NULL;
                             node->node_dic[k].start->next = child->node_dic[k].start;
                         }
-                        
+//                        node->node_dic[k].size += child->node_dic[k].size;
+
                     } else {
                         
                         // the node has an end node and start node
@@ -397,7 +406,7 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
                         }
                         node->node_dic[k].end->next = NULL;
                     }
-                    node->node_dic[k].size += child->node_dic[k].size;
+//                    node->node_dic[k].size += child->node_dic[k].size;
                     
                 }
                 

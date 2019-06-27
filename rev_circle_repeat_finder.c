@@ -70,7 +70,6 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
         maximal_repeat_pair_count += arr[i];
     }
     
-    printf("-------------------\n");
     printf("The total number of maximal reverse pair count is %lu\n", maximal_repeat_pair_count);
     
     FILE* index_file = fopen(output_file_path, "w");
@@ -85,12 +84,11 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
             int right_extension_start1 = p1+repeat_len;
             int right_extension_start2 = p2+repeat_len;
             
-            int right_limit = task == 1 ? strlength : strlength/2;
+            int right_limit = partition_num1 != partition_num2 ? strlength : strlength/2;
             if (right_extension_start2 + max_check_length > right_limit || right_extension_start1 + max_check_length > p2) {
                 continue;
             }
-
-
+            
             char* first_right_extension = returnSubstring(str, right_extension_start1, max_check_length);
             char* second_right_extension_rev = returnReverseComplementSubstring(str, right_extension_start2, max_check_length);
             char *concatenated_str = concatenate_two_str(first_right_extension, second_right_extension_rev);
@@ -98,9 +96,13 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
             long first_right_ext_len = strlen(first_right_extension);
             treenode_t *root = suffixTree_mcCreight(concatenated_str);
             
-//            int min_check_length = 5;
+
             result_list *cat_results = outputRepeatedPairs(root, concatenated_str, min_check_length, 1, 1, first_right_ext_len);
+
+            free(first_right_extension);
+            free(second_right_extension_rev);
             freeTree(root);
+
             free(concatenated_str);
 
             for (int m = 0; m < cat_results->size; m++) {
@@ -125,7 +127,7 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
                     cat_p2 = cat_p2 - max_check_length - 1;
                     
                     
-                    // we have ... A1 s1 A2 s2 A3 ...B1 s1^(-1) B2 s2^(-1) B3...
+                    // we have ... A1 s1 A2 s2 A3 ...B1 s1' B2 s2' B3...
                     // rev_distance(A2,B3) + rev_distance(A2,B1) (elementwise), take minimum index i1
                     // rev_distance(B2,A3) + rev_distance(B2,A1) (elementwise), taken minimum index i2
                     // len(A2) = len(B3) = len(B1) = l1
@@ -155,7 +157,7 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
                     
                     
                     char* A1 = returnSubstring(str, p1 - l2, l2);
-                    char* A3 = returnSubstring(str, right_extension_start2+cat_p1+cat_repeat_len, l2);
+                    char* A3 = returnSubstring(str, right_extension_start1+cat_p1+cat_repeat_len, l2);
                     char* B2 = returnComplementSubstring(str, right_extension_start2, l2);
                     int *result2 = get_result_minimizing_dist2(B2, A1, A3, l2);
                     free(A1); free(A3); free(B2);
@@ -176,14 +178,28 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
                     int second_s1_len = first_s1_len;
                     int second_s2_len = first_s2_len;
                     
-//                    char* first_str = returnSubstring(str, first_start, l1+l2+exact_len);
 //                    char* first_s1 = returnSubstring(str, first_start, first_s1_len);
 //                    char* first_s2 = returnSubstring(str, first_start+first_s1_len, first_s2_len);
-//                    char* second_str = returnSubstring(str, second_start, l1+l2+exact_len);
-//                    char* second_s1 = returnSubstring(str, second_start, second_s1_len);
-//                    char* second_s2 = returnSubstring(str, second_start+second_s1_len, second_s2_len);
-//                    int dist1 = levenshtein_val(first_s1, returnReverseComplementSubstring(str, second_start, second_s1_len), first_s1_len, second_s1_len);
-//                    int dist2 = levenshtein_val(first_s2, returnReverseComplementSubstring(str, second_start+second_s1_len, second_s2_len), first_s2_len, second_s2_len);
+//                    char* second_s1 = returnReverseComplementSubstring(str, second_start, second_s1_len);
+//                    char* second_s2 = returnReverseComplementSubstring(str, second_start+second_s1_len, second_s2_len);
+//                    printf("*****\n");
+//                    printf("%s\n", returnSubstring(str, first_start, first_s1_len+first_s2_len));
+//                    printf("%s\n", returnSubstring(str, second_start, second_s1_len+second_s2_len));
+//                    printf("%s\n", first_s1);
+//                    printf("%s\n", second_s1);
+//                    printf("%s\n", first_s2);
+//                    printf("%s\n", second_s2);
+//                    printf("%d,%d\n",min1,min2);
+//                    printf("%s,%s\n", returnSubstring(str, p1, t.length), returnSubstring(str, p2, t.length));
+//                    printf("%s,%s\n", returnSubstring(str, right_extension_start1+cat_p1, cat_repeat_len), returnSubstring(str, right_extension_start2+cat_p2, cat_repeat_len));
+//                    printf("A1: %s\n", A1);
+//                    printf("A3: %s\n", A3);
+//                    printf("B2: %s\n", B2);
+//                    printf("l2: %d\n", l2);
+
+
+//                    int dist1 = levenshtein_val(first_s1, second_s1, first_s1_len, second_s1_len);
+//                    int dist2 = levenshtein_val(first_s2, second_s2, first_s2_len, second_s2_len);
 //                    printf("%f\n", (double) (dist1+dist2)/(l1+l2+exact_len));
                     
                     if (task == 1) {
@@ -202,12 +218,9 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
                 }
             }
             free_results(cat_results);
-            free(first_right_extension); free(second_right_extension_rev);
         }
     }
-
     fclose(index_file);
-
     
     printf("the number of cirlce repeat is %ld \n", count);
 

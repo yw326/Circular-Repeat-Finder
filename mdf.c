@@ -27,6 +27,14 @@ int is_in_result_list(result_list* r, triple t) {
     return 0;
 }
 
+int count_num_results(result_list *r) {
+    int count = 0;
+    for (int i = 0; i < r->size; i++) {
+        count += r->result[i].size;
+    }
+    return count;
+}
+
 int is_complement_char(char a, char b) {
     if (a == 'A' && b == 'T') {
         return 1;
@@ -40,6 +48,39 @@ int is_complement_char(char a, char b) {
     return 0;
 }
 
+void check_maximal_repeats_result(result_list *r, char* str) {
+    int not_equal_count = 0;
+    int not_maximal_count = 0;
+    
+    for (int i = 0; i < r->size; i++) {
+        for (int j = 0; j < r->result[i].size; j++) {
+            triple t = r->result[i].result[j];
+            char* s1 = returnSubstring(str, t.p1, t.length);
+            char* s2 = returnSubstring(str, t.p2, t.length);
+            if (!checkTwoStringEqual(s1, s2, t.length)) {
+                not_equal_count++;
+            }
+            if (str[t.p1-1] == str[t.p2-1] || str[t.p1+t.length] == str[t.p2+t.length]) {
+                //                printf("------------\n");
+//                                printf("%s\n",s1);
+//                                printf("%s\n",s2);
+                //                char* s1_extend = returnSubstring(str, t.p1-1, t.length+2);
+                //                char* s2_extend = returnSubstring(str, t.p2-1, t.length+2);
+                //                printf("%s\n",s1_extend);
+                //                printf("%s\n",s2_extend);
+                not_maximal_count++;
+                //                free(s1_extend); free(s2_extend);
+            }
+            free(s1); free(s2);
+        }
+    }
+    printf("Not equal count: %d\n", not_equal_count);
+    printf("Not maximal count: %d\n", not_maximal_count);
+    printf("Number of maximal repeated pairs found: %d\n", count_num_results(r));
+}
+
+
+
 void check_maximal_rc_result(result_list *r, char* str) {
     int not_equal_count = 0;
     int not_maximal_count = 0;
@@ -50,6 +91,8 @@ void check_maximal_rc_result(result_list *r, char* str) {
             char* s1 = returnSubstring(str, t.p1, t.length);
             char* s2_rc = returnReverseComplementSubstring(str, t.p2, t.length);
             if (!checkTwoStringEqual(s1, s2_rc, t.length)) {
+//                printf("%s\n",s1);
+//                printf("%s\n",s2_rc);
                 not_equal_count++;
             }
             if ( is_complement_char(str[t.p1-1], str[t.p2+t.length]) || is_complement_char(str[t.p2-1], str[t.p1+t.length])) {
@@ -60,7 +103,7 @@ void check_maximal_rc_result(result_list *r, char* str) {
     }
     printf("Not equal count: %d\n", not_equal_count);
     printf("Not maximal count: %d\n", not_maximal_count);
-//    printf("Number of maximal repeated pairs found: %d\n", count_num_results(r));
+    printf("Number of maximal repeated pairs found: %d\n", count_num_results(r));
 }
 
 result_list *convert_to_absolute_idx(result_list *r, int s1_num, int s2_num, int partition_len, int second_idx_offset) {
@@ -71,14 +114,6 @@ result_list *convert_to_absolute_idx(result_list *r, int s1_num, int s2_num, int
         }
     }
     return r;
-}
-
-int count_num_results(result_list *r) {
-    int count = 0;
-    for (int i = 0; i < r->size; i++) {
-        count += r->result[i].size;
-    }
-    return count;
 }
 
 
@@ -237,11 +272,6 @@ void test_NC_021868_reverse() {
 
 int main(int argc, char *argv[]) {
 //    char* seq = getStrFromFile("NC_021868.txt");
-//    check_direct_pair_distance(seq, 44822, 48847, 13, 7, 20);
-//    check_rc_pair_distance(seq, 47295, 47325, 12, 8, 22);
-
-    //test_NC_021868_direct();
-//    test_NC_021868_reverse();
     
     // arg[1] = reverse or direct
     // -s seq_file name (optional)
@@ -420,6 +450,7 @@ int main(int argc, char *argv[]) {
             int task_num2 = tasks->tasks[i].str_num_2;
 
             int task_num = get_task_num(task_num1, task_num2, num_partitions);
+            printf("-------------------\n");
             printf("Performing task %d\n", task_num);
             
             snprintf(path_buf1, 100, "%s/partition-%d.txt",task_dir, task_num1);
@@ -441,7 +472,6 @@ int main(int argc, char *argv[]) {
             char* seq;
             char* seq1 = getStrFromFile(path_buf1);
             int pound_idx = strlen(seq1);
-//            printf("partition size: %d\n", pound_idx);
             
             int cat = task_num1 == task_num2 ? 0 : 1;
             
@@ -466,28 +496,34 @@ int main(int argc, char *argv[]) {
                 }
                 free(seq2);
             }
-
+            
             // build suffix tree and find all maximal repeated pairs
             treenode_t *t = suffixTree_mcCreight(seq);
             result_list *results = outputRepeatedPairs(t, seq, min_maximal_repeat_len, reversed, cat, pound_idx);
             freeTree(t);
-
+            
             if (reversed == 0) {
                 // pound_idx same value as partition size
                 findApproximateCircleRepeat(results->result, results->size, seq, mis_perc, min_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size);
             } else {
-                char* seq2 = getStrFromFile(path_buf2);
-                char* seq_for_reversed_cr = concatenate_two_str(seq1, seq2);
+                if (cat == 1) {
+                    char* seq2 = getStrFromFile(path_buf2);
+                    char* seq_for_reversed_cr = concatenate_two_str(seq1, seq2);
+                    findReverseApproximateCircleRepeat(results->result, results->size, seq_for_reversed_cr, mis_perc, min_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size);
+                    free(seq2);
+                    free(seq_for_reversed_cr);
+                } else {
+                    char* seq_for_reversed_cr = seq;
+                    findReverseApproximateCircleRepeat(results->result, results->size, seq_for_reversed_cr, mis_perc, min_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size);
+                }
                 
-                findReverseApproximateCircleRepeat(results->result, results->size, seq_for_reversed_cr, mis_perc, min_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size);
-                free(seq2); free(seq_for_reversed_cr);
+
             }
             free_results(results);
             free(seq1);
             if (cat+reversed != 0) {
                 free(seq);
             }
-
         }
         free_task_set(tasks);
     }

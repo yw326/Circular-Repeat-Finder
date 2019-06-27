@@ -51,6 +51,8 @@ void freeTree(treenode_t *root) {
 }
 
 
+
+
 /* Search where, in the tree, the string sfx appears. It must be
  * present in the tree in its entirety (not necessarily at a leaf node)
  * McCreight calls this function "rescanning" */

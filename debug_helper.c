@@ -203,37 +203,6 @@ void check_rc_pair_distance(char* seq, int start1, int start2, int first_s1_len,
 //    fclose(index_file);
 //}
 //
-//void check_maximal_repeats_result(result_list *r, char* str) {
-//    int not_equal_count = 0;
-//    int not_maximal_count = 0;
-//
-//    for (int i = 0; i < r->size; i++) {
-//        for (int j = 0; j < r->result[i].size; j++) {
-//            triple t = r->result[i].result[j];
-//            char* s1 = returnSubstring(str, t.p1, t.length);
-//            char* s2 = returnSubstring(str, t.p2, t.length);
-//            if (!checkTwoStringEqual(s1, s2, t.length)) {
-//                not_equal_count++;
-//            }
-//            if (str[t.p1-1] == str[t.p2-1] || str[t.p1+t.length] == str[t.p2+t.length]) {
-//                //                printf("------------\n");
-//                //                printf("%s\n",s1);
-//                //                printf("%s\n",s2);
-//                //                char* s1_extend = returnSubstring(str, t.p1-1, t.length+2);
-//                //                char* s2_extend = returnSubstring(str, t.p2-1, t.length+2);
-//                //                printf("%s\n",s1_extend);
-//                //                printf("%s\n",s2_extend);
-//                not_maximal_count++;
-//                //                free(s1_extend); free(s2_extend);
-//            }
-//            free(s1); free(s2);
-//        }
-//    }
-//    printf("Not equal count: %d\n", not_equal_count);
-//    printf("Not maximal count: %d\n", not_maximal_count);
-//    printf("Number of maximal repeated pairs found: %d\n", count_num_results(r));
-//}
-//
 
 
 

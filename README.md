@@ -45,7 +45,7 @@ Broadly speaking, minimum maximal repeat length and minimum extension length can
 
 ## Example
 ```
-./mccreight you_seq_file.txt direct -r 40 -m 0.1
+./mdf you_seq_file.txt direct -r 40 -m 0.1
 ```
 
 The above command searches for direct circle repeats in the sequence from file you_seq_file.txt, with minimum maximal repeat length 40, and allowed mismatch ration 10%.

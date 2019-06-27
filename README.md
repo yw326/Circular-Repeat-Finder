@@ -12,7 +12,7 @@ Enter the project directory, and generate the executable from code by using
 ```
 make
 ```
-You should be getting 2 executables: partition and mccreight.
+You should be getting 2 executables: partition and mdf.
 
 ## Preprocessing using Tandem Repeat Finder
 It is important in the proprocessing step to remove (mask) the tandem repeat segments of the input DNA sequence using Tandem Repeat Finder (TRF) https://tandem.bu.edu/trf/trf.html, because tandem repeats trivially satifies the definition of circle repeats by definition. 
@@ -25,7 +25,7 @@ The partition executable takes 3 arguments:
 
 This executable is used as a preprocessing step to for the -t option. It is often used when the input sequence is long, to speed up the searching through parallelization or to deal with memory issue.
 
-## Command Line Options for mccreight
+## Command Line Options for mdf
 
 The executable has 1 required argument, 1 argument from either -t or -s, and 2 optional arguments:
 * First argument (required): either "direct" or "reversed". 

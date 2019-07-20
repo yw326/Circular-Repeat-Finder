@@ -8,46 +8,6 @@
 
 #include "debug_helper.h"
 
-int convertCharToInt(char c) {
-    if (c == 'A') {
-        return 1;
-    } else if (c == 'T') {
-        return 2;
-    } else if (c == 'C') {
-        return 3;
-    } else if (c == 'G') {
-        return 4;
-    } else if (c == '$') {
-        return 0;
-    } else if (c == '#') {
-        return 5;
-    } else if (c == '!') {
-        return 6;
-    }
-    return -1;
-}
-
-char convertIntToChar(int i) {
-    if (i == 1) {
-        return 'A';
-    } else if (i == 2) {
-        return 'T';
-    } else if (i == 3) {
-        return 'C';
-    } else if (i == 4) {
-        return 'G';
-    } else if (i == 0) {
-        return '$';
-    } else if (i == 5) {
-        return '#';
-    } else if (i == 6) {
-        return '!';
-    }
-    return 'X';
-}
-
-
-
 void printArcLabel(char *str, treenode_t *node) {
     int start = node->arc_val.start;
     int end = node->arc_val.end;
@@ -87,37 +47,37 @@ void printPathLabel(char *str, treenode_t *node) {
     
 }
 
-void printDictionaryInfo(treenode_t *node, int linked_list_num) {
-    printf("%d ", node->first_child == NULL);
-    printf("The dictionary is { ");
-    int count = 0;
-    for (int i = 0; i < linked_list_num; i++) {
-        
-        char c = convertIntToChar(i);
-        Node *n = node->node_dic[i].start;
-        printf("%c: [", c);
-        while (n != NULL) {
-            printf("%i, ", n->data);
-            n = n->next;
-            count++;
-        }
-        printf("], ");
-    }
-    printf(" }\n");
-    
-    //    printf("--------------------------\n");
-    //    printf("count is %d", count);
-    //    if (count == 0) {
-    //        treenode_t *child = node->first_child;
-    //        while (child != NULL) {
-    ////            printDictionaryInfo(child);
-    //            printf("%d", child->first_child == NULL);
-    //            child = child->next_sibling;
-    //        }
-    //    }
-    //    printf("--------------------------\n");
-    
-}
+//void printDictionaryInfo(treenode_t *node, int linked_list_num) {
+//    printf("%d ", node->first_child == NULL);
+//    printf("The dictionary is { ");
+//    int count = 0;
+//    for (int i = 0; i < linked_list_num; i++) {
+//        
+//        char c = convertIntToChar(i);
+//        Node *n = node->node_dic[i].start;
+//        printf("%c: [", c);
+//        while (n != NULL) {
+//            printf("%i, ", n->data);
+//            n = n->next;
+//            count++;
+//        }
+//        printf("], ");
+//    }
+//    printf(" }\n");
+//    
+//    //    printf("--------------------------\n");
+//    //    printf("count is %d", count);
+//    //    if (count == 0) {
+//    //        treenode_t *child = node->first_child;
+//    //        while (child != NULL) {
+//    ////            printDictionaryInfo(child);
+//    //            printf("%d", child->first_child == NULL);
+//    //            child = child->next_sibling;
+//    //        }
+//    //    }
+//    //    printf("--------------------------\n");
+//    
+//}
 
 void printNodeInfo(treenode_t *node, char *str) {
     printArcLabel(str, node);
@@ -164,7 +124,9 @@ void check_direct_pair_distance(char* seq, int start1, int start2, int first_s1_
     int dist1 = levenshtein_val(first_s1, second_s1, first_s1_len, second_s1_len);
     int dist2 = levenshtein_val(first_s2, second_s2, first_s2_len, second_s2_len);
     
-    printf("the mismatch rate is %f\n", (double) (dist1+dist2) / s1s2_len);
+    printf("the total mismatch rate is %f\n", (double) (dist1+dist2) / s1s2_len);
+    printf("s1 mismatch rate is %f\n", (double) (dist1) / second_s1_len);
+    printf("s2 mismatch rate is %f\n", (double) (dist2) / first_s2_len);
     free(first_s1); free(first_s2); free(second_s1); free(second_s2);
 
 
@@ -187,7 +149,9 @@ void check_rc_pair_distance(char* seq, int start1, int start2, int first_s1_len,
     free(first_s1); free(first_s2); free(second_s1); free(second_s2);
     free(second_s1_rc); free(second_s2_rc);
     
-    printf("the mismatch rate is %f\n", (double) (dist1+dist2) / s1s2_len);
+    printf("the total mismatch rate is %f\n", (double) (dist1+dist2) / s1s2_len);
+    printf("s1 mismatch rate is %f\n", (double) (dist1) / second_s1_len);
+    printf("s2 mismatch rate is %f\n", (double) (dist2) / first_s2_len);
 }
 
 
@@ -204,6 +168,13 @@ void check_rc_pair_distance(char* seq, int start1, int start2, int first_s1_len,
 //}
 //
 
+//void print_arr(arr_with_size arr) {
+//    printf("[");
+//    for(int i = 0; i < arr.size; i++) {
+//        printf("%d,", arr.arr[i]);
+//    }
+//    printf("]\n");
+//}
 
 
 

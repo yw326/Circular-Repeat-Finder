@@ -118,49 +118,6 @@ char *getConcantenatedReversedComplementStrFromFile(char *file_name) {
     return str;
 }
 
-// input a seq file, output a file with "N" deleted
-void prefilter_file(char *file_name, char *output_file_name) {
-    char* s = getStrFromFile(file_name);
-    FILE *f = fopen(output_file_name, "w");
-    if (f == NULL) {
-        printf("Error opening file!\n");
-        exit(1);
-    }
-    fprintf(f, ">prefiltered \n");
-    fprintf(f, "%s", s);
-    free(s);
-    fclose(f);
-}
-
-// output first half and second half of the sequence into two files respectively
-void output_two_halves_of_file(char *file_name, char *output_name1, char *output_name2) {
-    char* s = getStrFromFile(file_name);
-    long len = strlen(s);
-    
-    FILE *f1 = fopen(output_name1, "w");
-    char s1[len/2 + 1];
-    for (int i = 0; i < len/2; i++) {
-        s1[i] = s[i];
-    }
-    s1[len/2 + 1] = '\0';
-    fprintf(f1, ">%s \n", output_name1);
-    fprintf(f1, "%s", s1);
-    fclose(f1);
-    
-    FILE *f2 = fopen(output_name2, "w");
-    char s2[len/2 + 1];
-    for (int i = 0; i < len/2; i++) {
-        s2[i] = s[i + len/2];
-    }
-    s2[len/2 + 1] = '\0';
-    fprintf(f2, ">%s \n", output_name2);
-    fprintf(f2, "%s", s2);
-    fclose(f2);
-    
-    free(s);
-}
-
-
 int count_num_files_in_dir(char* dir) {
     int file_count = 0;
     DIR * dirp;

@@ -22,6 +22,4 @@ char *getComplementSeqFromFile(char *file_name);
 char *getConcantenatedReversedStrFromFile(char *file_name);
 char *getConcantenatedReversedComplementStrFromFile(char *file_name);
 
-void prefilter_file(char *file_name, char *output_file_name);
-void output_two_halves_of_file(char *file_name, char *output_name1, char *output_name2);
 int count_num_files_in_dir(char* dir);

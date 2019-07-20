@@ -1,13 +1,15 @@
 
 
-#ifndef maximal_repeat_h
-#define maximal_repeat_h
+
 
 #include <stdio.h>
 #include "sfxtree.h"
 #include "edit_distance.h"
 #include "str_helper.h"
 #include "debug_helper.h"
+
+#ifndef maximal_repeat_h
+#define maximal_repeat_h
 
 typedef struct {
     int *arr;

@@ -14,20 +14,10 @@ int min_extension_check = 20;
 
 int debug_cnt = 0;
 
-//MARK: maximal repeat finding helpers
-//only used for reversed repeat finding
-int past_pairs_min_index[10000000];
-int past_pairs_max_index[10000000];
-int past_pairs_len = 0;
 
-void print_arr(arr_with_size arr) {
-    printf("[");
-    for(int i = 0; i < arr.size; i++) {
-        printf("%d,", arr.arr[i]);
-    }
-    printf("]\n");
-}
 
+
+// MARK: deallocators
 void free_arrlist(arr_list *l) {
     for (int i = 0; i < l->size; i++) {
         if (l->arrs[i].size != 0) {
@@ -38,6 +28,74 @@ void free_arrlist(arr_list *l) {
     free(l);
 }
 
+void freeLinkedList(linked_list merged_list[linked_list_num]) {
+    for (int i = 0; i < linked_list_num; i++) {
+        
+        Node *tmp = merged_list[i].start;
+        if (tmp == NULL) { continue; }
+        
+        while (merged_list[i].start->next != NULL) {
+            tmp = merged_list[i].start;
+            merged_list[i].start = merged_list[i].start->next;
+            free(tmp);
+        }
+        free(merged_list[i].start);
+    }
+}
+
+void free_results(result_list *results) {
+    for (int m = 0; m < results->size; m++) {
+        free(results->result[m].result);
+    }
+    free(results->result);
+    free(results);
+}
+
+
+//MARK: maximal repeat finding helpers
+
+int convertCharToInt(char c) {
+    if (c == 'A') {
+        return 1;
+    } else if (c == 'T') {
+        return 2;
+    } else if (c == 'C') {
+        return 3;
+    } else if (c == 'G') {
+        return 4;
+    } else if (c == '$') {
+        return 0;
+    } else if (c == '#') {
+        return 5;
+    } else if (c == '!') {
+        return 6;
+    }
+    return -1;
+}
+
+char convertIntToChar(int i) {
+    if (i == 1) {
+        return 'A';
+    } else if (i == 2) {
+        return 'T';
+    } else if (i == 3) {
+        return 'C';
+    } else if (i == 4) {
+        return 'G';
+    } else if (i == 0) {
+        return '$';
+    } else if (i == 5) {
+        return '#';
+    } else if (i == 6) {
+        return '!';
+    }
+    return 'X';
+}
+
+//only used for reversed repeat finding
+int past_pairs_min_index[10000000];
+int past_pairs_max_index[10000000];
+int past_pairs_len = 0;
 triple_list formCartisianProduct(linked_list list1[linked_list_num], arr_list *list2, int length, unsigned long strlen, int reversed, int cat, int pound_idx) {
     
     int max_count = 5000000;
@@ -200,27 +258,10 @@ arr_list *mergeLinkedLists(linked_list lists[linked_list_num][linked_list_num], 
 }
 
 
-void freeLinkedList(linked_list merged_list[linked_list_num]) {
-    for (int i = 0; i < linked_list_num; i++) {
-        
-//        if (merged_list[i].size == 0) { continue; }
-        Node *tmp = merged_list[i].start;
-        if (tmp == NULL) { continue; }
-        
-        while (merged_list[i].start->next != NULL) {
-            tmp = merged_list[i].start;
-            merged_list[i].start = merged_list[i].start->next;
-            free(tmp);
-        }
-        free(merged_list[i].start);
-    }
-}
 
 
 
-
-
-//MARK: major function
+//MARK: output repeats func
 result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int reversed, int cat, int pound_idx) {
     if (reversed == 0 && cat == 0) {
         // A,T,C,G,$
@@ -233,6 +274,7 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
     unsigned long len = strlen(str);
     treenode_t* s[len*2];
     treenode_t* q[len*2];
+    
 
     int len_q = 1;
     int len_s = 0;
@@ -296,7 +338,6 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
 //                printDictionaryInfo(child, linked_list_num);
                 num_children++;
                 freeLinkedList(child->node_dic);
-//                printf("y2\n");
                 child = child->next_sibling;
                 
             }
@@ -347,7 +388,7 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
 
                 arr_list *list2 = mergeLinkedLists(children_lists, m, number_of_children);
                 triple_list result = formCartisianProduct(children_lists[m], list2, str_len, len, reversed, cat, pound_idx);
-                
+
                 if (result.size != 0) {
                     results->result[results_len] = result;
                     results_len++;
@@ -422,13 +463,7 @@ result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int
     return results;
 }
 
-void free_results(result_list *results) {
-    for (int m = 0; m < results->size; m++) {
-        free(results->result[m].result);
-    }
-    free(results->result);
-    free(results);
-}
+
 
 
 

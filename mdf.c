@@ -27,6 +27,17 @@ int is_in_result_list(result_list* r, triple t) {
     return 0;
 }
 
+void write_maximal_repeated_pairs_to_file(result_list* r, char* file_name) {
+    FILE *f = fopen(file_name, "w");
+    for (int i = 0; i < r->size; i++) {
+        for (int j = 0; j < r->result[i].size; j++) {
+            triple t = r->result[i].result[j];
+            fprintf(f, "(%d,%d,%d)\n",t.p1,t.p2,t.length);
+        }
+    }
+    fclose(f);
+}
+
 int count_num_results(result_list *r) {
     int count = 0;
     for (int i = 0; i < r->size; i++) {
@@ -272,15 +283,20 @@ void test_NC_021868_reverse() {
 
 int main(int argc, char *argv[]) {
 //    char* seq = getStrFromFile("NC_021868.txt");
-    
+
     // arg[1] = reverse or direct
     // -s seq_file name (optional)
     // -t partition_file_directory_path task_numbers (optional)
-    // -r minimum_maximal_repeat_length (optional, default 40)
+    // -r first_level_minimum_maximal_repeat_length (optional, default 40)
+    // -c second_level_minimum_maximal_repeat_length (optional, defualt 10)
     // -m mismatch_percentage (optional, default 0.1)
     // -e extension length (optional, default 800)
     // NOTE: one and only one of -s and -t must be selected
-
+    
+    if (argc < 3) {
+        printf("Error: not enough arguments; at least 2 arguments (direct/reversed and one of the -t and -s options), but only found %d\n", argc-1);
+        return 1;
+    }
     
     // check required arguments
     char* reverse_or_direct = argv[1];
@@ -293,12 +309,14 @@ int main(int argc, char *argv[]) {
 
     //checking optional arguments
     int min_maximal_len_idx = -1;
+    int min_2nd_maximal_len_idx = -1;
     int mis_perc_idx = -1;
     int task_dir_idx = -1;
     int seq_file_idx = -1;
     int extension_idx = -1;
     
     int min_maximal_repeat_len = 40;
+    int min_2nd_maximal_repeat_len = 20;
     float mis_perc = 0.1;
     int extension_len = 800;
     char* task_dir;
@@ -329,11 +347,26 @@ int main(int argc, char *argv[]) {
             }
             
             if (atoi(argv[i+1]) <= 0) {
-                printf("Error: invalid argument for minimum maximal repeat length\n");
+                printf("Error: invalid argument for extension length\n");
                 return 1;
             } else {
                 extension_idx = i+1;
                 extension_len = atoi(argv[extension_idx]);
+            }
+        }
+        
+        if (strcmp(argv[i], "-c") == 0) {
+            if (i+1 >= argc) {
+                printf("Error: no argument found for second minimum maximal repeat\n");
+                return 1;
+            }
+            
+            if (atoi(argv[i+1]) <= 0) {
+                printf("Error: invalid argument for second minimum maximal repeat length\n");
+                return 1;
+            } else {
+                min_2nd_maximal_len_idx = i+1;
+                min_2nd_maximal_repeat_len = atoi(argv[min_2nd_maximal_len_idx]);
             }
         }
 
@@ -388,10 +421,21 @@ int main(int argc, char *argv[]) {
     if (min_maximal_len_idx == -1) {
         printf("No minimum maximal repeat length found. Use default value %d\n", min_maximal_repeat_len);
     }
+    
+    if (min_2nd_maximal_len_idx == -1) {
+        printf("No second level minimum maximal repeat length found. Use default value %d\n", min_2nd_maximal_repeat_len);
+    }
 
     if (mis_perc_idx == -1) {
         printf("No allowed mismatch percentage length found. Use default value %f\n", mis_perc);
     }
+    
+    int one_nbhd;
+    if (min_2nd_maximal_repeat_len > min_maximal_repeat_len) {
+        min_2nd_maximal_repeat_len = min_maximal_repeat_len;
+        printf("second maximal repeat length (l2) is larger than first maximal repeat length (l1), so reset l2 to l1\n");
+    }
+    one_nbhd = min_2nd_maximal_repeat_len == min_maximal_repeat_len ? 1 : 0;
     
     int reversed = strcmp(reverse_or_direct, "reversed") == 0 ? 1 : 0;
     if (task_dir_idx * seq_file_idx > 0 ) {
@@ -410,10 +454,10 @@ int main(int argc, char *argv[]) {
         result_list *results;
         if (reversed == 1) {
             results = outputRepeatedPairs(t, str, min_maximal_repeat_len, 1, 0, strlen(str)/2);
-            findReverseApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_maximal_repeat_len, extension_len, "result/rev_index.txt", 0, -1, -1, -1,- 1);
+            findReverseApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_2nd_maximal_repeat_len, extension_len, "result/rev_index.txt", 0, -1, -1, -1,- 1, one_nbhd);
         } else {
             results = outputRepeatedPairs(t, str, min_maximal_repeat_len, 0, 0, -1);
-            findApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_maximal_repeat_len, extension_len, "result/index.txt", 0, -1, -1, -1, -1);
+            findApproximateCircleRepeat(results->result, results->size, str, mis_perc, min_2nd_maximal_repeat_len, extension_len, "result/index.txt", 0, -1, -1, -1, -1, one_nbhd);
         }
                 
         freeTree(t);
@@ -504,17 +548,16 @@ int main(int argc, char *argv[]) {
             
             if (reversed == 0) {
                 // pound_idx same value as partition size
-                findApproximateCircleRepeat(results->result, results->size, seq, mis_perc, min_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size);
+                findApproximateCircleRepeat(results->result, results->size, seq, mis_perc, min_2nd_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size, one_nbhd);
             } else {
                 if (cat == 1) {
                     char* seq2 = getStrFromFile(path_buf2);
                     char* seq_for_reversed_cr = concatenate_two_str(seq1, seq2);
-                    findReverseApproximateCircleRepeat(results->result, results->size, seq_for_reversed_cr, mis_perc, min_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size);
-                    free(seq2);
-                    free(seq_for_reversed_cr);
+                    findReverseApproximateCircleRepeat(results->result, results->size, seq_for_reversed_cr, mis_perc, min_2nd_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size, one_nbhd);
+                    free(seq2); free(seq_for_reversed_cr);
                 } else {
                     char* seq_for_reversed_cr = seq;
-                    findReverseApproximateCircleRepeat(results->result, results->size, seq_for_reversed_cr, mis_perc, min_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size);
+                    findReverseApproximateCircleRepeat(results->result, results->size, seq_for_reversed_cr, mis_perc, min_2nd_maximal_repeat_len, extension_len, task_output_file_path, 1, pound_idx, task_num1, task_num2, partition_size, one_nbhd);
                 }
                 
 

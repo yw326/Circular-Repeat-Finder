@@ -46,7 +46,7 @@ void freeTree(treenode_t *root) {
     if (root->first_child)
         freeTree(root->first_child);
     if (root->next_sibling)
-        freeTree(root->next_sibling);
+        freeTree(root->next_sibling);    
     free(root);
 }
 

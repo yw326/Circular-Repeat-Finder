@@ -543,6 +543,12 @@ int main(int argc, char *argv[]) {
             
             // build suffix tree and find all maximal repeated pairs
             treenode_t *t = suffixTree_mcCreight(seq);
+            printf("Suffix tree built\n");
+//            if (task_num == 3) {
+//                printf("debug\n");
+//                result_list *results2 = outputRepeatedPairs_debug(t, seq, min_maximal_repeat_len, reversed, cat, pound_idx);
+//                free(results2);
+//            }
             result_list *results = outputRepeatedPairs(t, seq, min_maximal_repeat_len, reversed, cat, pound_idx);
             freeTree(t);
             
@@ -567,6 +573,7 @@ int main(int argc, char *argv[]) {
             if (cat+reversed != 0) {
                 free(seq);
             }
+
         }
         free_task_set(tasks);
     }

@@ -47,6 +47,8 @@ char *get_splitted_seqfile_path(char* dir_name, int seq_num) {
         path[i+dir_name_len+splitted_seqfile_name_prefix_len+seq_num_str_len+1] = file_suffix[i];
     }
     
+    path[dir_name_len+splitted_seqfile_name_prefix_len+seq_num_str_len+1+file_suffix_len] = '\0';
+    
     return path;
 }
 

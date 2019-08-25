@@ -37,7 +37,6 @@ int *levenshtein(char *s1, char *s2, int s1len, int s2len) {
             
             lastdiag = olddiag;
         }
-        
 
     }
     

@@ -65,17 +65,6 @@ void printPathLabel(char *str, treenode_t *node) {
 //    }
 //    printf(" }\n");
 //    
-//    //    printf("--------------------------\n");
-//    //    printf("count is %d", count);
-//    //    if (count == 0) {
-//    //        treenode_t *child = node->first_child;
-//    //        while (child != NULL) {
-//    ////            printDictionaryInfo(child);
-//    //            printf("%d", child->first_child == NULL);
-//    //            child = child->next_sibling;
-//    //        }
-//    //    }
-//    //    printf("--------------------------\n");
 //    
 //}
 

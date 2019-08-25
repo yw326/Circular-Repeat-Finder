@@ -40,6 +40,7 @@ typedef struct {
 #endif /* maximal_repeat_h */
 
 result_list* outputRepeatedPairs(treenode_t *root, char *str, int threshold, int reversed, int cat, int pound_idx);
+result_list* outputRepeatedPairs_debug(treenode_t *root, char *str, int threshold, int reversed, int cat, int pound_idx);
 void free_results(result_list *results);
 
 

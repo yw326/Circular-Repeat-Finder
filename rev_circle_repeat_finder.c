@@ -18,9 +18,10 @@
  */
 int* get_result_minimizing_dist2(char* s1, char* s2, char* s3, int len){
     if (len == 0) {
-        int *result = malloc(sizeof(int)*2);
+        int *result = malloc(sizeof(int)*3);
         result[0] = 0;
         result[1] = 0;
+        result[2] = 0;
         return result;
     }
     char* s1_rev = reverse_str(s1);
@@ -48,7 +49,7 @@ int* get_result_minimizing_dist2(char* s1, char* s2, char* s3, int len){
         }
     }
     
-    int *result = malloc(sizeof(int)*2);
+    int *result = malloc(sizeof(int)*3);
     result[0] = idx;
     result[1] = v1[idx];
     result[2] = v2[idx];
@@ -62,9 +63,7 @@ int* get_result_minimizing_dist2(char* s1, char* s2, char* s3, int len){
 
 
 void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, char *str, double mismatch_ratio, int min_check_length, int max_check_length, char* output_file_path, int task, int pound_idx, int partition_num1, int partition_num2, unsigned long partition_size, int one_nbhd) {
-    
-    char* nc_seq = getStrFromFile("chrY_prefiltered.mask");
-    
+        
     int arr[size];
     unsigned long maximal_repeat_pair_count = 0;
     
@@ -73,7 +72,20 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
         maximal_repeat_pair_count += arr[i];
     }
     
+//    FILE* maximal_repeat_file = fopen("maximal_repeat_output.txt", "w");
+//    for (int i = 0; i < size; i++) {
+//        for (int j = 0; j < arr[i]; j++) {
+//            triple t = my_result_list[i].result[j];
+//            int p1 = to_seq_idx(t.p1, partition_num1, partition_size);
+//            int p2 = to_seq_idx(t.p2, partition_num2, partition_size);
+//            fprintf(maximal_repeat_file, "(%d,%d,%d)\n", p1, p2, t.length);
+//        }
+//    }
+//    fclose(maximal_repeat_file);
+    
     printf("The total number of maximal reverse pair count is %lu\n", maximal_repeat_pair_count);
+    
+//    return;
     
     FILE* index_file = fopen(output_file_path, "w");
     long count = 0;
@@ -106,7 +118,7 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
             freeTree(root);
 
             free(concatenated_str);
-
+            
             for (int m = 0; m < cat_results->size; m++) {
                 for (int n = 0; n < cat_results->result[m].size; n++) {
                     triple cat_t = cat_results->result[m].result[n];
@@ -205,7 +217,9 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
 //                    printf("--------------------1\n");
 //                    
 //                    printf("(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", first_start, second_start, first_s1_len, first_s2_len, second_s1_len, second_s2_len, total_mismatch_ratio, s1_mismatch, s2_mismatch, l1+l2+exact_len);
-//                    check_rc_pair_distance(nc_seq, first_start, second_start, first_s1_len, second_s2_len, s1s2_len);
+////                    check_rc_pair_distance(nc_seq, first_start, second_start, first_s1_len, second_s2_len, s1s2_len);
+//                    printf("--------------------1\n");
+
 
                     fprintf(index_file, "(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", first_start, second_start, first_s1_len, first_s2_len, second_s1_len, second_s2_len, total_mismatch_ratio, s1_mismatch, s2_mismatch, l1+l2+exact_len);
                     
@@ -217,16 +231,20 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
             
             
             
-            
             if (one_nbhd == 1) {
                 continue;
             }
             
-            
             int left_extension_start1 = p1-max_check_length;
             int left_extension_start2 = p2-max_check_length;
             
+//            int left_limit = partition_num1 != partition_num2 ? strlength : strlength/2;
+            
             if (left_extension_start1 < 0 || left_extension_start2 <= p1 + repeat_len) {
+                continue;
+            }
+            
+            if (partition_num1 != partition_num2 && left_extension_start2 <= strlength/2) {
                 continue;
             }
             
@@ -236,11 +254,10 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
             treenode_t *root2 = suffixTree_mcCreight(concatenated_str2);
             
             result_list *cat_results2 = outputRepeatedPairs(root2, concatenated_str2, min_check_length, 1, 1, max_check_length);
-            
             free(first_left_extension);
             free(second_left_extension_rev);
-            freeTree(root2);
             
+            freeTree(root2);
             free(concatenated_str2);
             
             for (int m = 0; m < cat_results2->size; m++) {
@@ -280,6 +297,7 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
                         continue;
                     }
                     
+                    
                     int s1s2_len = l1+l2+exact_len;
                     
                     char* A2 = returnSubstring(str, left_extension_start1+cat_p1+cat_repeat_len, l1);
@@ -292,6 +310,7 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
                     if (s_1_min1 > s1s2_len*mismatch_ratio || s_2_min1 > s1s2_len*mismatch_ratio) {
                         continue;
                     }
+                    
                     
                     char* A1 = returnSubstring(str, left_extension_start1+cat_p1-l2, l2);
                     char* A3 = returnSubstring(str, p1+repeat_len, l2);
@@ -339,19 +358,21 @@ void findReverseApproximateCircleRepeat(triple_list *my_result_list, int size, c
                     }
                     
 //                    printf("--------------------2\n");
-//
 //                    printf("(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", first_start, second_start, first_s1_len, first_s2_len, second_s1_len, second_s2_len, total_mismatch_ratio, s1_mismatch, s2_mismatch, l1+l2+exact_len);
+//                    printf("--------------------2\n");
+//
 //                    check_rc_pair_distance(nc_seq, first_start, second_start, first_s1_len, second_s2_len, s1s2_len);
                     
                     fprintf(index_file, "(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", first_start, second_start, first_s1_len, first_s2_len, second_s1_len, second_s2_len, total_mismatch_ratio, s1_mismatch, s2_mismatch, l1+l2+exact_len);
                     
                     count++;
-                    
                 }
             }
             free_results(cat_results2);
         }
+        
     }
+    
     fclose(index_file);
     
     printf("the number of cirlce repeat is %ld \n", count);

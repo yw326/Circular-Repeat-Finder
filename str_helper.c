@@ -71,7 +71,7 @@ char *returnReverseComplementSubstring(char *str, int start, int length) {
     return s;
 }
 
-// return s1#s2$
+// return s1#s2
 char *concatenate_two_str(char *s1, char *s2) {
     unsigned long s1_len = strlen(s1);
     unsigned long s2_len = strlen(s2);

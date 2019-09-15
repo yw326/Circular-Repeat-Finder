@@ -60,7 +60,9 @@ There will be an index file as output in the result folder. Each circle repeat i
 * 4th: length of first s2
 * 5th: length of second s1
 * 6th: length of second s2
-* 7th: mismatch ratio
-* 8th: length of s1s2 (which is the same as s2s1 or s1's2', even if the two s1's and two s2's are not exact match)
+* 7th: total mismatch ratio
+* 8th: mismatch ratio for s1
+* 9th: mismatch ratio for s2
+* 10th: length of s1s2 (which is the same as s2s1 or s1's2', even if the two s1's and two s2's are not exact match)
 
 

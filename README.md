@@ -6,7 +6,7 @@ For large input sequences, memory requirement is often prohibitive too run the e
 
 The suffix tree construction code is based on https://github.com/shysaur/shysaur-suffixtrees.
 
-
+![Image of Yaktocat] (https://github.com/yw326/MicroDNA_Detection/microDNA_illustration_1.png)
 
 ## Getting Started
 

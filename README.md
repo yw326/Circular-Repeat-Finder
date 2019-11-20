@@ -6,6 +6,9 @@ For large input sequences, memory requirement is often prohibitive too run the e
 
 The suffix tree construction code is based on https://github.com/shysaur/shysaur-suffixtrees.
 
+![](microDNA_illustration_1.png)
+
+
 ## Getting Started
 
 Enter the project directory, and generate the executable from code by using 

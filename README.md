@@ -1,6 +1,6 @@
 # MicroDNA_Detection
 
-The goal of this project is to provide an efficient algorithm to locate potential microDNA reintegration pairs within DNA sequences. Each potential microDNA is mathematically defined as a circle repeat, with form "...s1s2...s2s1..." (direct circle repeat), or "...s1s2...s1's2'..." (reversed circle repeat), where s' denotes the reversed complement of s. The program takes a sequence as input, and output two text files that contains the circle repeats sequences found by the algorithm and as well as their locations in the sequence. A detailed description of the algorithm and problem description is included in the microDNA_Finder.pdf.
+The goal of this project is to provide an efficient algorithm to locate potential microDNA reintegration pairs within DNA sequences. Each potential microDNA is mathematically defined as a circle repeat, with form "...s1s2...s2s1..." (direct circle repeat), or "...s1s2...s1's2'..." (inverted circle repeat), where s' denotes the reversed complement of s. The program takes a sequence as input, and output two text files that contains the circle repeats sequences found by the algorithm and as well as their locations in the sequence. A detailed description of the algorithm and problem description is included in the microDNA_Finder.pdf.
 
 For large input sequences, memory requirement is often prohibitive too run the entire sequence. In such cases, the partition option should be used.  
 

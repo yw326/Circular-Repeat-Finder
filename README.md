@@ -6,10 +6,10 @@ For large input sequences, memory requirement is often prohibitive too run the e
 
 The suffix tree construction code is based on https://github.com/shysaur/shysaur-suffixtrees.
 
-Here is an illustratino for direct microDNA reintegration pattern:
+Here is an illustration for direct microDNA reintegration pattern:
 ![](microDNA_illustration_1.png)
 
-Here is an illustratino for inverted microDNA reintegration pattern:
+Here is an illustration for inverted microDNA reintegration pattern:
 ![](microDNA_illustration_2.png)
 
 

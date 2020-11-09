@@ -25,15 +25,17 @@ make
 You should be able to get the following 2 executables: partition and CRPFinder.
 
 ## Preprocessing using Tandem Repeat Finder
-It is important in the proprocessing step to remove (mask) the tandem repeat segments of the input DNA sequence using [Tandem Repeat Finder](https://github.com/Benson-Genomics-Lab/TRF) , because tandem repeats trivially satifies the definition of circle repeats by definition. 
+It is important in the proprocessing step to remove (mask) the tandem repeat segments of the input DNA sequence using [Tandem Repeat Finder](https://github.com/Benson-Genomics-Lab/TRF). This is because tandem repeats trivially satifies the definition of circle repeats by definition. 
 
 ## Command Line Options for partition
+The <p> partition </p> executable is used as a preprocessing step to for the <p>--partition</p> option for <p>CRPFinder</p>. It is often used when the input sequence is long, to speed up the searching through parallelization or to deal with memory issue.
+
 The partition executable takes 3 arguments:
 * 1st argument: sequence file name
 * 2nd argument: number of partitions
 * 3rd argument: name of the directory where the splitted sequence files are stored
 
-This executable is used as a preprocessing step to for the -t option. It is often used when the input sequence is long, to speed up the searching through parallelization or to deal with memory issue.
+
 
 ## Command Line Options for mdf
 

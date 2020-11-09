@@ -7,8 +7,9 @@ OBJCFLAGS	+= $(CFLAGS)
 
 OBJDIR	= obj
 
-_DEPS	= sfxtree.h maximal_repeat.h file_helper.h debug_helper.h edit_distance.h  str_helper.h circle_repeat_finder.h rev_circle_repeat_finder.h task.h
-_SOURCE	= sfxtree.c maximal_repeat.c file_helper.c debug_helper.c edit_distance.c  str_helper.c circle_repeat_finder.c rev_circle_repeat_finder.c task.c
+_DEPS	= Utils.h SuffixArray.h List.h TestUtils.h MRP.h TestSuffixArray.h hashset.h TestList.h TestMRP.h TestHashset.h MyStructs.h EditDistance.h DirectCircleRepeatFinder.h TestDirectCircleRepeatFinder.h InvertedCircleRepeatFinder.h TestInvertedCircleRepeatFinder.h PartitionTask.h TestPartitionTask.h
+
+_SOURCE	= Utils.c SuffixArray.c List.c TestUtils.c MRP.c TestSuffixArray.c hashset.c TestList.c TestMRP.c TestHashset.c EditDistance.c DirectCircleRepeatFinder.c TestDirectCircleRepeatFinder.c InvertedCircleRepeatFinder.c TestInvertedCircleRepeatFinder.c PartitionTask.c TestPartitionTask.c
 
 
 
@@ -18,16 +19,19 @@ OBJ	= $(patsubst %, $(OBJDIR)/%, $(_SOURCE:.c=.o))
 .PHONY:	all
 .PHONY:	clean
 
-all:	$(OBJDIR) mdf partition
+all:	$(OBJDIR) CRPFinder Test Partition
 
 $(OBJDIR):	
 	mkdir -p $(OBJDIR)
 
 
-mdf:	$(OBJ) $(OBJDIR)/mdf.o
+CRPFinder:	$(OBJ) $(OBJDIR)/CRPFinder.o
 	$(CC) -o $@ $^ $(CFLAGS)
 
-partition:	$(OBJ) $(OBJDIR)/partition.o
+Test:	$(OBJ) $(OBJDIR)/Test.o
+	$(CC) -o $@ $^ $(CFLAGS)
+
+Partition:	$(OBJ) $(OBJDIR)/Partition.o
 	$(CC) -o $@ $^ $(CFLAGS)
 
 $(OBJDIR)/%.o:	%.c $(DEPS)
@@ -37,4 +41,4 @@ $(OBJDIR)/%.o:	%.m $(DEPS)
 	$(CC) -c -o $@ $< $(OBJCFLAGS)
 
 clean:
-	rm -f $(OBJDIR)/*.o mdf partition
+	rm -f $(OBJDIR)/*.o mdf test partition

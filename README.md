@@ -4,7 +4,7 @@
 
 MicroDNA is the most abundent type of extrachromosomal circular DNA (eccDNA). They are small in size and have been found in various eukaryotes ranging from yeasts to humans. MicroDNAs are thought to originate from genomic regions with active chromatin marks. To better understand the function of microDNAs, it is of interest to investigate their interaction with the chromosomal DNA, given the frequent presence of microDNAs in the nuclei of human and mouse cell lines. In particular, do microDNAs reintegrate back into the genome?
 
-The goal of this algorithm is to provide an efficient algorithm to locate potential microDNA reintegration patterns within DNA sequences. A reintegration pattern is mathematically defined as a circle repeat, with form ...s<sub>1</sub>s<sub>2</sub>...s<sub>2</sub>'s<sub>1</sub>'... (direct circlar repeat), or ...s1s2...s̅'<sub>2</sub>s̅'<sub>1</sub>'... (inverted circle repeat), where s' denotes the approximate copy of s, and s̅ the reverse complement of s. The program takes a sequence as input, and output the circlar repeated pairs found by the algorithm in text files. Optional parameters for s<sub>1</sub>, s<sub>2</sub>, and mismatch ratio, and neighorhood size can also be specified. 
+The goal of this algorithm is to provide an efficient algorithm to locate potential microDNA reintegration patterns within DNA sequences. A reintegration pattern is mathematically defined as a circle repeat, with form ...s<sub>1</sub>s<sub>2</sub>...s<sub>2</sub>'s<sub>1</sub>'... (direct circlar repeat), or ...s1s2...s̅'<sub>2</sub>s̅'<sub>1</sub>... (inverted circle repeat), where s' denotes the approximate copy of s, and s̅ the reverse complement of s. The program takes a sequence as input, and output the circlar repeated pairs found by the algorithm in text files. Optional parameters for s<sub>1</sub>, s<sub>2</sub>, and mismatch ratio, and neighorhood size can also be specified. 
 
 For large input sequences, memory requirement is often prohibitive too run the entire sequence. In such cases, we provide a helper program that partitions the long sequences into smaller sequences, and divide the original task into a set of smaller subtasks. This also provides a way to speed up the task by running the subtasks on multiple machines. 
 
@@ -22,10 +22,10 @@ Enter the project directory, and generate the executable from code by using
 ```
 make
 ```
-You should be getting 2 executables: partition and mdf.
+You should be able to get the following 2 executables: partition and CRPFinder.
 
 ## Preprocessing using Tandem Repeat Finder
-It is important in the proprocessing step to remove (mask) the tandem repeat segments of the input DNA sequence using Tandem Repeat Finder (TRF) https://tandem.bu.edu/trf/trf.html, because tandem repeats trivially satifies the definition of circle repeats by definition. 
+It is important in the proprocessing step to remove (mask) the tandem repeat segments of the input DNA sequence using [Tandem Repeat Finder](https://github.com/Benson-Genomics-Lab/TRF) , because tandem repeats trivially satifies the definition of circle repeats by definition. 
 
 ## Command Line Options for partition
 The partition executable takes 3 arguments:

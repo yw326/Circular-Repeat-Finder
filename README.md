@@ -4,17 +4,15 @@
 
 MicroDNA is the most abundent type of extrachromosomal circular DNA (eccDNA). They are small in size and have been found in various eukaryotes ranging from yeasts to humans. MicroDNAs are thought to originate from genomic regions with active chromatin marks. To better understand the function of microDNAs, it is of interest to investigate their interaction with the chromosomal DNA, given the frequent presence of microDNAs in the nuclei of human and mouse cell lines. In particular, do microDNAs reintegrate back into the genome?
 
-The goal of this algorithm is to provide an efficient algorithm to locate potential microDNA reintegration patterns within DNA sequences. A reintegration pattern is mathematically defined as a circle repeat, with form "...s<sub>1</sub>s<sub>2</sub>...s<sub>2</sub><sup>'</sup>s<sub>1</sub>'..." (direct circlar repeat), or "...s1s2...s1's2'..." (inverted circle repeat), where s' denotes the reversed complement of s. The program takes a sequence as input, and output two text files that contains the circle repeats sequences found by the algorithm and as well as their locations in the sequence. A detailed description of the algorithm and problem description is included in the microDNA_Finder.pdf.
+The goal of this algorithm is to provide an efficient algorithm to locate potential microDNA reintegration patterns within DNA sequences. A reintegration pattern is mathematically defined as a circle repeat, with form ...s<sub>1</sub>s<sub>2</sub>...s<sub>2</sub>'s<sub>1</sub>'... (direct circlar repeat), or ...s1s2...s̅'<sub>2</sub>s̅'<sub>1</sub>'... (inverted circle repeat), where s' denotes the approximate copy of s, and s̅ the reverse complement of s. The program takes a sequence as input, and output the circlar repeated pairs found by the algorithm in text files. Optional parameters for s<sub>1</sub>, s<sub>2</sub>, and mismatch ratio, and neighorhood size can also be specified. 
 
-For large input sequences, memory requirement is often prohibitive too run the entire sequence. In such cases, the partition option should be used.  
+For large input sequences, memory requirement is often prohibitive too run the entire sequence. In such cases, we provide a helper program that partitions the long sequences into smaller sequences, and divide the original task into a set of smaller subtasks. This also provides a way to speed up the task by running the subtasks on multiple machines. 
 
-The suffix tree construction code is based on https://github.com/shysaur/shysaur-suffixtrees.
+The suffix array construction code is based on https://github.com/felipelouza/sacak-lcp.
 
-Here is an illustration for direct microDNA reintegration pattern:
-![](microDNA_illustration_1.png)
+Here is an illustration for circular repeats pattern:
+![](reintegration.png)
 
-Here is an illustration for inverted microDNA reintegration pattern:
-![](microDNA_illustration_2.png)
 
 
 

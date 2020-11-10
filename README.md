@@ -91,6 +91,6 @@ There will be an index file as output in the result folder. Each circle repeat i
 In version 2.0, suffix array replaces suffix tree for MRP search, increasing the memory efficiency by more than 10 times.
 
 ## To Do
-In version 2.0, <code>--partition<\code> option for inverted circular repeats has not been implemented (though <code>--single<\code> still works).
+In version 2.0, <code>--partition</code> option for inverted circular repeats has not been implemented (though <code>--single</code> still works).
 
 

@@ -87,4 +87,10 @@ There will be an index file as output in the result folder. Each circle repeat i
 * 9th: mismatch ratio for s2
 * 10th: length of s<sub>1</sub>s<sub>2</sub>
 
+## What's New
+In version 2.0, suffix array replaces suffix tree for MRP search, increasing the memory efficiency by more than 10 times.
+
+## To Do
+In version 2.0, <code>--partition<\code> option for inverted circular repeats has not been implemented (though <code>--single<\code> still works).
+
 

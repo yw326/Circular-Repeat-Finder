@@ -58,10 +58,19 @@ The file should contain the DNA sequence in which you search the circle repeats;
 
 ## Example
 ```
-./CRPFinder direct --single you_seq_file.txt 
+./CRPFinder direct --single your_seq_file.txt 
 ```
 
 The above command searches for direct circle repeats in the sequence from file you_seq_file.txt with the default parameters.
+
+```
+./partition your_seq_file.txt 5 your_partition_dir
+./CRPFinder direct --partition your_partition_dir 1-8
+```
+
+The above commands searches the sequence into 5 parts and output them to your_partition_dir. There are a total of 5*(5+1)/2=15 tasks, and CRPFinder searches for direct circle repeats in tasks 1 to 8 with the default parameters. Note if we set the tasks to <code>1-15<\code>, then this commend i equivalent to the previous command.  
+
+
 
 ## Output File
 There will be an index file as output in the result folder. Each circle repeat is represented by a 8-tuple.

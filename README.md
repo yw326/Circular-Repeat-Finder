@@ -56,6 +56,8 @@ The file should contain the DNA sequence in which you search the circle repeats;
 * Optional argument: "--L extension_checking_length". Default value is 800.
 * Optional argument: "--alpha max_mismatch_ratio_allowed". Default value of percentage mismatch is 0.1
 
+For the <code>--partition</code> option, if there are <code>n</code> partition sequences, then the total number of tasks is <code>n*(n+1)/2</code>.  <code>task_numbers<\code> can take the form of an inclusive range <code>x-y</code>; for example <code>3-6</code> specifies task 3,4,5,6. 
+
 ## Example
 ```
 ./CRPFinder direct --single your_seq_file.txt 
@@ -68,7 +70,7 @@ The above command searches for direct circle repeats in the sequence from file y
 ./CRPFinder direct --partition your_partition_dir 1-8
 ```
 
-The above commands searches the sequence into 5 parts and output them to your_partition_dir. There are a total of 5*(5+1)/2=15 tasks, and CRPFinder searches for direct circle repeats in tasks 1 to 8 with the default parameters. Note if we set the tasks to <code>1-15<\code>, then this commend is equivalent to the previous command.  
+The above commands searches the sequence into 5 parts and output them to your_partition_dir. There are a total of 5*(5+1)/2=15 tasks, and CRPFinder searches for direct circle repeats in tasks 1 to 8 with the default parameters. Note if we set the tasks to <code>1-15</code>, then this commend is equivalent to the previous command.  
 
 
 

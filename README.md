@@ -11,7 +11,7 @@ For large input sequences, memory requirement is often prohibitive too run the e
 The suffix array construction code is based on https://github.com/felipelouza/sacak-lcp.
 
 Here is an illustration for circular repeats pattern:
-![](reintegration.png)
+![](reintegration.png=100x100)
 
 
 

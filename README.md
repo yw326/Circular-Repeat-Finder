@@ -12,7 +12,7 @@ The suffix array construction code is based on https://github.com/felipelouza/sa
 
 Here is an illustration for circular repeats pattern:
 
-<img src="reintegration.png" alt="drawing" width="1000"/>
+<img src="reintegration.png" alt="drawing" width="600"/>
 
 
 

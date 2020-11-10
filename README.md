@@ -56,7 +56,7 @@ The file should contain the DNA sequence in which you search the circle repeats;
 * Optional argument: "--L extension_checking_length". Default value is 800.
 * Optional argument: "--alpha max_mismatch_ratio_allowed". Default value of percentage mismatch is 0.1
 
-For the <code>--partition</code> option, if there are <code>n</code> partition sequences, then the total number of tasks is <code>n*(n+1)/2</code>.  <code>task_numbers</code> can take the form of an inclusive range <code>x-y</code>; for example <code>3-6</code> specifies task 3,4,5,6. 
+For the <code>--partition</code> option, if there are <code>n</code> partition sequences, then the total number of tasks is <code>n*(n+1)/2</code> (each pair of partition sequence forms a task).  <code>task_numbers</code> can take the form of an inclusive range <code>x-y</code>; for example <code>3-6</code> specifies task 3,4,5,6. 
 
 ## Example
 ```

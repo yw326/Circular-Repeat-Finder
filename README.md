@@ -28,51 +28,51 @@ You should be able to get the following 2 executables: partition and CRPFinder.
 It is important in the proprocessing step to remove (mask) the tandem repeat segments of the input DNA sequence using [Tandem Repeat Finder](https://github.com/Benson-Genomics-Lab/TRF). This is because tandem repeats trivially satifies the definition of circle repeats by definition. 
 
 ## Command Line Options for partition
-The <code> partition </code> executable is used as a preprocessing step to for the <code>--partition</code> option for <code>CRPFinder</code>. It is often used when the input sequence is long, to speed up the searching through parallelization or to deal with memory issue.
+The <code>partition</code> executable is used as a preprocessing step to for the <code>--partition</code> option in <code>CRPFinder</code> to deal with long input sequences. 
 
 The partition executable takes 3 arguments:
 * 1st argument: sequence file name
-* 2nd argument: number of partitions
-* 3rd argument: name of the directory where the splitted sequence files are stored
+* 2nd argument: number of partitions 
+* 3rd argument: name of the directory where the partitioned sequence files are stored
 
-
+The this executable equally splits (execept the last one) the sequence into the specified amount of smaller sequences, and output those sequences into the specified directory.
 
 ## Command Line Options for mdf
 
-The executable has 1 required argument, 1 argument from either -t or -s, and 2 optional arguments:
-* First argument (required): either "direct" or "reversed". 
+The executable has 1 required argument, 1 argument from either <code>--single</code> or <code>--partition</code>, and 2 optional arguments:
+* First argument (required): either "direct" or "inverted". 
 <!---
 If "direct", then the program will search direct circle repeats (of form "...s1s2...s2s1..."); if "reversed", the program will search reversed circle repeats (of form "...s1s2...s1^(-1)s2^(-1)...").
 -->
 
-* -s sequence file name. 
+* --single sequence_file_name 
 <!---
 The file should contain the DNA sequence in which you search the circle repeats; note that any characters that are not A, T, C, G are filtered out in the preprocessing.
 -->
-* -t partition_file_dir task_numbers
-* Optional argument: "-r minimum_first_level_maximal_repeat_length". Default value is 40.
-* Optional argument: "-c minimum_second_level_maximal_repeat_length". Default value is 20.
-* Optional argument: "-e extension checking length". Default value is 800.
-* Optional argument: "-m percentage_mismatch_allowed". Default value of percentage mismatch is 0.1
+* --partition partition_file_dir task_numbers
+* Optional argument: "--l1 minimum_first_level_maximal_repeat_length". Default value is 40.
+* Optional argument: "--l2 minimum_second_level_maximal_repeat_length". Default value is 20.
+* Optional argument: "--L extension_checking_length". Default value is 800.
+* Optional argument: "--alpha max_mismatch_ratio_allowed". Default value of percentage mismatch is 0.1
 
 ## Example
 ```
-./mdf direct -s you_seq_file.txt -r 40 -m 0.1
+./CRPFinder direct --single you_seq_file.txt 
 ```
 
-The above command searches for direct circle repeats in the sequence from file you_seq_file.txt, with minimum maximal repeat length 40, and allowed mismatch ration 10%.
+The above command searches for direct circle repeats in the sequence from file you_seq_file.txt with the default parameters.
 
 ## Output File
 There will be an index file as output in the result folder. Each circle repeat is represented by a 8-tuple.
 * 1st: the start index of s1s2
-* 2nd: the start index of s2s1 (or s1's2' if reverse)
-* 3rd: length of first s1
-* 4th: length of first s2
-* 5th: length of second s1
-* 6th: length of second s2
+* 2nd: the start index of s<sub>2</sub>'s<sub>1</sub>' (or s̅'<sub>2</sub>s̅'<sub>1</sub> if inverted)
+* 3rd: length of s1 
+* 4th: length of s2
+* 5th: length of s<sub>1</sub>'
+* 6th: length of s̅'<sub>2</sub>
 * 7th: total mismatch ratio
 * 8th: mismatch ratio for s1
 * 9th: mismatch ratio for s2
-* 10th: length of s1s2 (which is the same as s2s1 or s1's2', even if the two s1's and two s2's are not exact match)
+* 10th: length of s<sub>1</sub>s<sub>2</sub>
 
 

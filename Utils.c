@@ -7,10 +7,10 @@
 
 #include "Utils.h"
 
-int getDNASequenceLengthFromFile (char *fileName) {
+unsigned long getDNASequenceLengthFromFile (char *fileName) {
     FILE *fp;
     fp = fopen(fileName, "r");
-    int n = 0;
+    unsigned long n = 0;
     int c;
     while ((c = fgetc(fp)) != EOF) {
         if ((char)c == 'A' || (char)c == 'T' || (char)c == 'C' || (char)c == 'G') {
@@ -27,7 +27,7 @@ void getDNASequenceFromFile(char *fileName, char* seq) {
     fp = fopen(fileName, "r");
     
     int c;
-    int n = 0;
+    unsigned long n = 0;
 
     while ((c = fgetc(fp)) != EOF) {
         if ((char)c == 'A' || (char)c == 'T' || (char)c == 'C' || (char)c == 'G') {
@@ -257,6 +257,7 @@ char** partitionSequence(char* seq, int numberOfPartitions) {
     if (n % numberOfPartitions != 0) {
         partitionSize += 1;
     }
+    printf("partition size: %ld\n", partitionSize);
 
     for (int i = 0; i < numberOfPartitions - 1; i++) {
         char* partition = malloc(sizeof(char)*partitionSize + 1);

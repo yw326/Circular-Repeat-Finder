@@ -179,18 +179,20 @@ int main(int argc, char *argv[]) {
     
     // perform search on a single sequence
     if (searchInSingleSequence) {
-        long sequenceLength = getDNASequenceLengthFromFile(seqFileName);
+        unsigned long sequenceLength = getDNASequenceLengthFromFile(seqFileName);
         const char* seq = malloc(sizeof(char)*(sequenceLength+1));
         getDNASequenceFromFile(seqFileName, seq);
-        long n = sequenceLength+1;
 
         if (useDirectSearch) {
-            findDirectCircleRepeatedPairs(seq, n, l1, l2, L, alpha, "result/DirectCircleRepeatIndices.txt", 0, NULL);
+            findDirectCircleRepeatedPairs(seq, NULL, sequenceLength, 0, l1, l2, L, alpha, 
+                "result/DirectCircleRepeatIndices.txt", 0, NULL);
         } else {
-            findInvertedCircleRepeatedPairs(seq, n, l1, l2, L, alpha, "result/InvertedCircleRepeatIndices.txt", 0);
+            findInvertedCircleRepeatedPairs(seq, sequenceLength, l1, l2, L, alpha, "result/InvertedCircleRepeatIndices.txt", 0);
         }
 
         free(seq);
+
+
     } else {
         unsigned long partitionSize = getPartitionSize(taskDir);
         int numPartitions = countNumPartitionFilesInDir(taskDir);
@@ -236,47 +238,28 @@ int main(int argc, char *argv[]) {
             snprintf(taskOutputFilePath, 200, "%s/task-%d-result(%d,%d).txt", taskOutputDir, taskNum, taskNum1, taskNum2);
             
             // set up seq
-            char* seq;
             char* seq1 = malloc(sizeof(char)*(partitionSize+1));
+            char* seq2 = malloc(sizeof(char)*(partitionSize+1));
             getDNASequenceFromFile(pathBuf1, seq1);
             
             int isOnSameSequence = taskNum1 == taskNum2;
             
             if (!isOnSameSequence) {
-                char* seq2 = malloc(sizeof(char)*(partitionSize+1));
                 getDNASequenceFromFile(pathBuf2, seq2);
-                unsigned long seq2Len = strlen(seq2);
-                if (useDirectSearch) {
-                    // on different sequences, direct
-                    seq = malloc(sizeof(char)*(2*partitionSize+2));
-                    getConcatenatedSequence(seq, seq1, seq2, partitionSize, seq2Len);
-                } else {
-                    // on different sequences, inverted
-                    // add a new inverted mrp search?
-                }
-                free(seq2);
-                
-            } else {
-                if (useDirectSearch) {
-                    // on the same sequence, direct
-                    seq = seq1;
-                } else {
-                    // on the same sequence, reversed
-                }
-            }
+            } 
+
+            unsigned long n = strlen(seq1);
+            unsigned long n2 = isOnSameSequence ? 0 : strlen(seq2);
 
             // perform search
-            unsigned long n = strlen(seq) + 1;
             if (useDirectSearch) {
-                findDirectCircleRepeatedPairs(seq, n, l1, l2, L, alpha, taskOutputFilePath, 0, &tasks->tasks[i]);
+                findDirectCircleRepeatedPairs(seq1, seq2, n, n2, l1, l2, L, alpha, taskOutputFilePath, 0, &tasks->tasks[i]);
             } else {
 
             }
             
-            if (!isOnSameSequence) {
-                free(seq);
-            } 
             free(seq1);
+            free(seq2);
         }
         freeTaskSet(tasks);
     }

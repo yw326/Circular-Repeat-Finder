@@ -431,11 +431,23 @@ mrpList* searchMRPWithOption(const char* sequence, unsigned long n, uint_t thres
 
 
 mrpList* searchMRPInSingleSequence(const char* sequence, unsigned long n, uint_t threshold) {
-    return searchMRPWithOption(sequence, n, threshold, 0, -1);
+    return searchMRPWithOption(sequence, n+1, threshold, 0, -1);
 }
 
-mrpList* searchMRPInTwoSequences(const char* sequence, unsigned long n, uint_t threshold, unsigned long firstSequenceLength) {
-    mrpList* ml = searchMRPWithOption(sequence, n, threshold, 1, firstSequenceLength);
+// mrpList* searchMRPInTwoSequences(const char* sequence, unsigned long n, uint_t threshold, unsigned long firstSequenceLength) {
+//     mrpList* ml = searchMRPWithOption(sequence, n, threshold, 1, firstSequenceLength);
+//     return ml;
+// }
+
+mrpList* searchMRPInTwoSequences(const char* seq1, const char* seq2, unsigned long n1, unsigned long n2, uint_t threshold) {
+
+    char* seq =  malloc(sizeof(char)*(n1+n2+2));
+    getConcatenatedSequence(seq, seq1, seq2, n1, n2);
+
+    mrpList* ml = searchMRPWithOption(seq, (n1+n2+1)+1, threshold, 1, n1);
+
+    free(seq);
+
     return ml;
 }
 

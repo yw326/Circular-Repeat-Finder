@@ -17,7 +17,7 @@ int testSearchMRP1() {
     // arrange
     const char* testStr = "ACAAACATAT";
     int threshold = 3;
-    long n = strlen(testStr)+1;
+    long n = strlen(testStr);
 
     // act
     mrpList *ml = searchMRPInSingleSequence(testStr, n, threshold);
@@ -46,7 +46,7 @@ int testSearchMRP2() {
     // arrange
     const char* testStr = "AGAAGACTATGAACCTGACGATTACGACGA";
     int threshold = 4;
-    long n = strlen(testStr)+1;
+    long n = strlen(testStr);
 
     // act
     mrpList *ml = searchMRPInSingleSequence(testStr, n, threshold);
@@ -89,7 +89,7 @@ int testSearchMRP3() {
     const char* seq = malloc(sizeof(char)*(sequenceLength+1));
     getDNASequenceFromFile("NC_021868.txt", seq);
     int threshold = 10;
-    long n = sequenceLength+1;
+    long n = sequenceLength;
 
     // act
     mrpList *ml = searchMRPInSingleSequence(seq, n, threshold);
@@ -122,7 +122,7 @@ int testSearchMRP4() {
     const char* seq = malloc(sizeof(char)*(sequenceLength+1));
     getDNASequenceFromFile("chrY_prefiltered.mask", seq);
     int threshold = 40;
-    long n = sequenceLength+1;
+    long n = sequenceLength;
 
     // act
     mrpList *ml = searchMRPInSingleSequence(seq, n, threshold);
@@ -149,12 +149,9 @@ int testSearchMRPInTwoSequences() {
     int threshold = 3;
     long n1 = strlen(sequence1);
     long n2 = strlen(sequence2);
-    char* sequence = malloc(sizeof(char)*(n1+n2+2));
-    getConcatenatedSequence(sequence, sequence1, sequence2, n1, n2);
-    long n = strlen(sequence) + 1;
 
     // act
-    mrpList *ml = searchMRPInTwoSequences(sequence, n, threshold, n1);
+    mrpList *ml = searchMRPInTwoSequences(sequence1, sequence2, n1, n2, threshold);
 
     // assert
     int failed = 0;
@@ -172,7 +169,6 @@ int testSearchMRPInTwoSequences() {
     }
 
     freeMRPList(ml);
-    free(sequence);
 
     printf("Passed: testSearchMRPOption1\n");
     return failed;
@@ -187,12 +183,9 @@ int testSearchMRPInTwoSequences2() {
     int threshold = 5;
     long n1 = strlen(sequence1);
     long n2 = strlen(sequence2);
-    char* sequence = malloc(sizeof(char)*(n1+n2+2));
-    getConcatenatedSequence(sequence, sequence1, sequence2, n1, n2);
-    long n = strlen(sequence) + 1;
 
     // act
-    mrpList *ml = searchMRPInTwoSequences(sequence, n, threshold, n1);
+    mrpList *ml = searchMRPInTwoSequences(sequence1, sequence2, n1, n2, threshold);
 
     // assert
     int failed = 0;
@@ -211,7 +204,6 @@ int testSearchMRPInTwoSequences2() {
     // }
 
     freeMRPList(ml);
-    free(sequence);
 
     printf("Passed: testSearchMRPInTwoSequences2\n");
     return failed;

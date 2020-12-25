@@ -48,16 +48,20 @@ int main(int argc, char *argv[]) {
         return -1;
     }
     
-    long sequenceLength = getDNASequenceLengthFromFile(seqFileName);
+    unsigned long sequenceLength = getDNASequenceLengthFromFile(seqFileName);
+    printf("sequence length: %ld\n", sequenceLength);
+
     const char* seq = malloc(sizeof(char)*(sequenceLength+1));
     getDNASequenceFromFile(seqFileName, seq);
 
-    if (num_partitions >= strlen(seq)) {
+    if (num_partitions >= sequenceLength) {
         printf("Error: number of partitions greater than sequence length\n");
         return 1;
     }
 
     char** sequences = partitionSequence(seq, num_partitions);
+    free(seq);
+
     for (int i = 0; i < num_partitions; i++) {
         char *file_path = getSplittedSeqFilePath(dir_name, i+1);
         FILE* seq_file = fopen(file_path, "w");
@@ -67,7 +71,7 @@ int main(int argc, char *argv[]) {
     }
 
     freePartitions(sequences, num_partitions);
-    free(seq);
+    
     
     return 0;
 }

@@ -12,7 +12,7 @@ int testFindDirectCircleRepeatedPairs() {
     float alpha = 0.1;
 
     // act
-    findDirectCircleRepeatedPairs(seq, n, l1, l2, L, alpha, "result/DirectCircleRepeatIndices.txt", 0, NULL);
+    findDirectCircleRepeatedPairs(seq, NULL, n, 0, l1, l2, L, alpha, "result/DirectCircleRepeatIndices.txt", 0, NULL);
 
     // assert
     int failed = 0;
@@ -40,7 +40,7 @@ int testFindDirectCircleRepeatedPairsSubstrings1() {
     float alpha = 0.1;
 
     // act
-    findDirectCircleRepeatedPairs(seq, n, l1, l2, L, alpha, "result/DirectCircleRepeatIndices.txt", 1, NULL);
+    findDirectCircleRepeatedPairs(seq, NULL, n, 0, l1, l2, L, alpha, "result/DirectCircleRepeatIndices.txt", 1, NULL);
 
     // assert
     int failed = 0;
@@ -67,7 +67,7 @@ int testFindDirectCircleRepeatedPairsSubstrings2() {
     float alpha = 0.1;
 
     // act
-    findDirectCircleRepeatedPairs(seq, n, l1, l2, L, alpha, "result/DirectCircleRepeatIndices.txt", 1, NULL);
+    findDirectCircleRepeatedPairs(seq, NULL, n, 0, l1, l2, L, alpha, "result/DirectCircleRepeatIndices.txt", 1, NULL);
 
     // assert
     int failed = 0;

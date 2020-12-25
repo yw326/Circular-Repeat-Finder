@@ -20,7 +20,11 @@ mrpList* searchMRPInSingleSequence(const char* sequence, unsigned long n, uint_t
 /**
  * given sequence = s1#s2, output all mrps (p1,p2,l) with p1 in s1 and p2 in s2
  */
-mrpList* searchMRPInTwoSequences(const char* sequence, unsigned long n, uint_t threshold, unsigned long firstSequenceLength);
+mrpList* searchMRPInTwoSequences(const char* seq1, const char* seq2, unsigned long n1, unsigned long n2, 
+            uint_t threshold);
+            
+// mrpList* searchMRPInTwoSequences(const char* sequence, unsigned long n, uint_t threshold, unsigned long firstSequenceLength);
+
 
 /**
  * output all maximal inverted pairs in sequence

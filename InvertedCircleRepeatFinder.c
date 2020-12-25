@@ -161,11 +161,11 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
             free(result2);
 
             // output result to file
-            int firstStart = repeat1p1 - i2;
+            unsigned long firstStart = repeat1p1 - i2;
             int firstS1Length = i2 + repeat1Length + i1;
             int firstS2Length = x1 - i1 + repeat2Length + (x2 - i2);
 
-            int secondStart = repeat1p2 - i1;
+            unsigned long secondStart = repeat1p2 - i1;
             int secondS1Length = firstS1Length;
             int secondS2Length = firstS2Length;
 
@@ -177,7 +177,7 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
                 continue;
             }
 
-            fprintf(outputFile, "(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
+            fprintf(outputFile, "(%ld,%ld,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
             firstS2Length, secondS1Length, secondS2Length, totalMismatchRatio, s1Mismatch, s2Mismatch, x1+x2+exactLength);
 
             // printf("(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
@@ -271,11 +271,11 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
             free(result2);
 
             // output result to file
-            int firstStart = leftExtensionStart1 + repeat2p1 - i2;
+            unsigned long  firstStart = leftExtensionStart1 + repeat2p1 - i2;
             int firstS1Length = i2 + repeat2Length + i1;
             int firstS2Length = x1 - i1 + repeat1Length + (x2 - i2);
 
-            int secondStart = leftExtensionStart2 + repeat2p2 - i1;
+            unsigned long  secondStart = leftExtensionStart2 + repeat2p2 - i1;
             int secondS2Length = firstS1Length;
             int secondS1Length = firstS2Length;
 
@@ -287,7 +287,7 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
                 continue;
             }
 
-            fprintf(outputFile, "(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
+            fprintf(outputFile, "(%ld,%ld,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
             firstS2Length, secondS1Length, secondS2Length, totalMismatchRatio, s1Mismatch, s2Mismatch, x1+x2+exactLength);
 
             // printf("(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 

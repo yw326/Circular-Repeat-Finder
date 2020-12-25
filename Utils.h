@@ -16,7 +16,7 @@
 
 #endif /* Utils_h */
 
-int getDNASequenceLengthFromFile (char *fileName);
+unsigned long getDNASequenceLengthFromFile (char *fileName);
 
 /**
  * return DNA sequence from the file: characters other than A,T,C,G are removed

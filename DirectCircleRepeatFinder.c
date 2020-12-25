@@ -47,8 +47,8 @@ void getMiminizationVector(char* s1, char* s2, char* s3, unsigned long l, int* r
     free(v2Reverse);
 }
 
-void findDirectCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, int L, double alpha, 
-        char* outputFilePath, int verbose, task *t) {
+void findDirectCircleRepeatedPairs(char *seq, char* seq2, unsigned long n, unsigned long n2, 
+        int l1, int l2, int L, double alpha, char* outputFilePath, int verbose, task *t) {
     
     
     FILE* outputFile = fopen(outputFilePath, "w");
@@ -56,7 +56,7 @@ void findDirectCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, i
 
     mrpList *firstLevelMrps;
     if (t && t->partitionNum1 != t->partitionNum2) {
-        firstLevelMrps = searchMRPInTwoSequences(seq, n, l1, t->partitionSize);
+        firstLevelMrps = searchMRPInTwoSequences(seq, seq2, n, n2, l1);
     } else {
         firstLevelMrps = searchMRPInSingleSequence(seq, n, l1);
     }
@@ -85,13 +85,10 @@ void findDirectCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, i
             printf("firstRightExtension: %s\n", firstRightExtension);
             printf("secondLeftExtension: %s\n", secondLeftExtension);
         }
-
-        char* concatenatedSequence1 = malloc(sizeof(char)*(2*L+2));
-        getConcatenatedSequence(concatenatedSequence1, firstRightExtension, secondLeftExtension, L, L);
         
-        mrpList* secondLevelMrps = searchMRPInTwoSequences(concatenatedSequence1, 2*L+2, l2, L);
+        mrpList* secondLevelMrps = searchMRPInTwoSequences(firstRightExtension, secondLeftExtension, L, L, l2);
 
-        free(firstRightExtension); free(secondLeftExtension); free(concatenatedSequence1);
+        free(firstRightExtension); free(secondLeftExtension); 
 
         for (int j = 0; j < secondLevelMrps->size; j++) {
             mrp currMrp2 = secondLevelMrps->mrps[j];
@@ -158,11 +155,11 @@ void findDirectCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, i
             free(result2);
 
             // output result to file
-            int firstStart = repeat1p1 - (x2 - i2);
+            unsigned long firstStart = repeat1p1 - (x2 - i2);
             int firstS1Length = x2 - i2 + repeat1Length + i1;
             int firstS2Length = x1 - i1 + repeat2Length + i2;
 
-            int secondStart = secondLeftExtensionStart + repeat2p2- x1 + i1;
+            unsigned long secondStart = secondLeftExtensionStart + repeat2p2- x1 + i1;
             int secondS2Length = x1 - i1 + repeat2Length + i2;
             int secondS1Length = x2 - i2 + repeat1Length + i1;
 
@@ -183,7 +180,7 @@ void findDirectCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, i
                 }
             } 
 
-            fprintf(outputFile, "(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
+            fprintf(outputFile, "(%ld,%ld,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
             firstS2Length, secondS1Length, secondS2Length, totalMismatchRatio, s1Mismatch, s2Mismatch, x1+x2+exactLength);
 
             // printf("a (%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
@@ -210,13 +207,10 @@ void findDirectCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, i
             printf("firstLeftExtension: %s\n", firstLeftExtension);
             printf("secondRightExtension: %s\n", secondRightExtension);
         }
-
-        char* concatenatedSequence2 = malloc(sizeof(char)*(2*L+2));
-        getConcatenatedSequence(concatenatedSequence2, firstLeftExtension, secondRightExtension, L, L);
         
-        mrpList* secondLevelMrps2 = searchMRPInTwoSequences(concatenatedSequence2, 2*L+2, l2, L);
+        mrpList* secondLevelMrps2 = searchMRPInTwoSequences(firstLeftExtension, secondRightExtension, L, L, l2);
 
-        free(firstLeftExtension); free(secondRightExtension); free(concatenatedSequence2);
+        free(firstLeftExtension); free(secondRightExtension); 
 
         for (int j = 0; j < secondLevelMrps2->size; j++) {
             mrp currMrp2 = secondLevelMrps2->mrps[j];
@@ -271,11 +265,11 @@ void findDirectCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, i
             free(result2);
 
             // output result to file
-            int firstStart = firstLeftExtensionStart + repeat2p1 - (x2-i2);
+            unsigned long  firstStart = firstLeftExtensionStart + repeat2p1 - (x2-i2);
             int firstS1Length = x2 - i2 + repeat2Length + i1;
             int firstS2Length = x1 - i1 + repeat1Length + i2;
 
-            int secondStart = repeat1p2 - (x1 - i1);
+            unsigned long secondStart = repeat1p2 - (x1 - i1);
             int secondS2Length = x1 - i1 + repeat1Length + i2;
             int secondS1Length = x2 - i2 + repeat2Length + i1;
 
@@ -297,7 +291,7 @@ void findDirectCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, i
             } 
 
 
-            fprintf(outputFile, "(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
+            fprintf(outputFile, "(%ld,%ld,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
             firstS2Length, secondS1Length, secondS2Length, totalMismatchRatio, s1Mismatch, s2Mismatch, x1+x2+exactLength);
 
             // printf("b (%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 

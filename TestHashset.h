@@ -7,6 +7,7 @@
 #include "MRP.h"
 
 int testHashset();
+int testRemoveDuplicates();
 
 #endif 
 

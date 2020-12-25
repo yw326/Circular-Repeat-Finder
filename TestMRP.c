@@ -216,7 +216,7 @@ int testSearchInvertedMRPInSingleSequence() {
     const char* testStr = "AGAAGACTATGCGTCTTA";
     // const char* testStr = "AGAAGACTATGCGTCTTA#TAAGACGCATAGTCTTCT";
     int threshold = 5;
-    long n = strlen(testStr)+1;
+    long n = strlen(testStr);
 
     // act
     mrpList *ml = searchInvertedMRPInSingleSequence(testStr, n, threshold);

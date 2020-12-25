@@ -415,17 +415,8 @@ mrpList* searchMRPWithOption(const char* sequence, unsigned long n, uint_t thres
     free(stack);
 
     mrpList *result = malloc(sizeof(mrpList));
-    // mrp* resultMRPs = malloc(sizeof(mrp)*mrpCount[0]);
-    // result->size = mrpCount[0];
-    // for (int i = 0; i < mrpCount[0]; i++) {
-    //     resultMRPs[i].p1 = mrps[i].p1;
-    //     resultMRPs[i].p2 = mrps[i].p2;
-    //     resultMRPs[i].length = mrps[i].length;
-    // }
     result->mrps = mrps;
     result->size = mrpCount[0];
-    // free(mrps);
-
     return result;
 }
 
@@ -433,11 +424,6 @@ mrpList* searchMRPWithOption(const char* sequence, unsigned long n, uint_t thres
 mrpList* searchMRPInSingleSequence(const char* sequence, unsigned long n, uint_t threshold) {
     return searchMRPWithOption(sequence, n+1, threshold, 0, -1);
 }
-
-// mrpList* searchMRPInTwoSequences(const char* sequence, unsigned long n, uint_t threshold, unsigned long firstSequenceLength) {
-//     mrpList* ml = searchMRPWithOption(sequence, n, threshold, 1, firstSequenceLength);
-//     return ml;
-// }
 
 mrpList* searchMRPInTwoSequences(const char* seq1, const char* seq2, unsigned long n1, unsigned long n2, uint_t threshold) {
 
@@ -453,27 +439,13 @@ mrpList* searchMRPInTwoSequences(const char* seq1, const char* seq2, unsigned lo
 
 mrpList* searchInvertedMRPInSingleSequence(const char* sequence, unsigned long n, uint_t threshold) {
     char* concatenatedInvertedSequence = malloc(sizeof(char)*(2*n+2));
-    getConcantenatedInvertedSequence(sequence, n-1, concatenatedInvertedSequence);
-    unsigned long n2 = strlen(concatenatedInvertedSequence) + 1;
-    mrpList* resultWithDuplicates = searchMRPWithOption(concatenatedInvertedSequence, n2, threshold, 2, n-1);
+    getConcantenatedInvertedSequence(sequence, n, concatenatedInvertedSequence);
+
+    mrpList* resultWithDuplicates = searchMRPWithOption(concatenatedInvertedSequence, (2*n+1)+1, threshold, 2, n);
     free(concatenatedInvertedSequence);
 
-    hashset_t set = hashset_create();
-    mrpList* ml = malloc(sizeof(mrpList));
-    mrp* resultMRPs = malloc(sizeof(mrp)*resultWithDuplicates->size);
-    int size = 0;
-    for (int i = 0; i < resultWithDuplicates->size; i++) {
-        mrp m = resultWithDuplicates->mrps[i];
-        if (!hashset_is_member(set, m)) {
-            resultMRPs[size] = m;
-            size++;
-            hashset_add(set,m);
-        }
-    }
-    ml->mrps = resultMRPs;
-    ml->size = size;
+    mrp* ml = removeDuplicates(resultWithDuplicates);
     freeMRPList(resultWithDuplicates);
-    hashset_destroy(set);
     return ml;
 }
 

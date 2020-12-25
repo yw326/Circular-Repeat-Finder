@@ -238,3 +238,22 @@ int hashset_is_member(hashset_t set, mrp newMrp)
     }
     return 0;
 }
+
+mrpList* removeDuplicates(mrpList* resultWithDuplicates) {
+    hashset_t set = hashset_create();
+    mrpList* ml = malloc(sizeof(mrpList));
+    mrp* resultMRPs = malloc(sizeof(mrp)*resultWithDuplicates->size);
+    int size = 0;
+    for (int i = 0; i < resultWithDuplicates->size; i++) {
+        mrp m = resultWithDuplicates->mrps[i];
+        if (!hashset_is_member(set, m)) {
+            resultMRPs[size] = m;
+            size++;
+            hashset_add(set,m);
+        }
+    }
+    ml->mrps = resultMRPs;
+    ml->size = size;
+    hashset_destroy(set);
+    return ml;
+}

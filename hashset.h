@@ -6,17 +6,6 @@
 #include <stdlib.h>
 #include "MyStructs.h"
 
-
-    // struct hashset_st {
-    //     size_t nbits;
-    //     size_t mask;
-
-    //     size_t capacity;
-    //     mrp *items;
-    //     size_t nitems;
-    //     size_t n_deleted_items;
-    // };
-
     struct hashset_st {
         size_t nbits;
         size_t mask;
@@ -48,5 +37,7 @@
      * returns non-zero if the item exists and zero otherwise
      */
     int hashset_is_member(hashset_t set, mrp newMrp);
+
+    mrpList* removeDuplicates(mrpList* resultWithDuplicates);
 
 #endif

@@ -38,6 +38,7 @@ int main(int argc, char *argv[]) {
     failedCount += testSearchMRPInTwoSequences();
     failedCount += testSearchMRPInTwoSequences2();
     failedCount += testHashset();
+    failedCount += testRemoveDuplicates();
     failedCount += testGetCorresondingIndexFromConcatenatedInvertedSequenceLeft();
     failedCount += testSearchInvertedMRPInSingleSequence();
     failedCount += testSearchInvertedMRPInTwoSequences();

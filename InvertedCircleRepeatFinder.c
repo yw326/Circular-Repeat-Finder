@@ -53,17 +53,29 @@ void getMiminizationVectorInv(char* s1, char* s2, char* s3, unsigned long l, int
     free(v2Inverted);
 }
 
-void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2, int L, double alpha, 
-        char* outputFilePath, int verbose) {
+void findInvertedCircleRepeatedPairs(char *seq1, char* seq2, unsigned long n1, unsigned long n2, int l1, int l2, int L, 
+        double alpha, char* outputFilePath, int verbose, task *t) {
     
     FILE* outputFile = fopen(outputFilePath, "w");
     int count = 0;
 
+    mrpList *firstLevelMrps;
+    if (t && t->partitionNum1 != t->partitionNum2) {
+        firstLevelMrps = searchInvertedMRPInTwoSequencesAbsolute(seq1, seq2, n1, n2, l1);
+    } else {
+        firstLevelMrps = searchInvertedMRPInSingleSequence(seq1, n1, l1);
+    }
 
-    mrpList *firstLevelMrps = searchInvertedMRPInSingleSequence(seq, n, l1);
+
+    char* seq = malloc(sizeof(char)*(n1+n2+2));
+    getConcatenatedSequence(seq, seq1, seq2, n1, n2);
+
     printf("the number of first level inverted mrps is %d\n", firstLevelMrps->size);
 
     for (int i = 0; i < firstLevelMrps->size; i++) {
+
+        
+        
         mrp currMrp1 = firstLevelMrps->mrps[i];
         uint_t repeat1Length = currMrp1.length;
         uint_t repeat1p1 = currMrp1.p1;
@@ -72,7 +84,7 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
         int rightExtensionStart1 = repeat1p1 + repeat1Length;
         int rightExtensionStart2 = repeat1p2 + repeat1Length;
 
-        int rightLimit = n; // it's (n // 2) if parallel 
+        int rightLimit = n1 + n2; 
         if (rightExtensionStart2 + L >= rightLimit || rightExtensionStart1 + L >= repeat1p2) {
             continue;
         }
@@ -98,7 +110,6 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
             uint_t repeat2p1 = currMrp2.p1;
             uint_t repeat2p2 = currMrp2.p2;
 
-            
             // repeat2p2 = repeat2p2 - L - 1;
 
             // we have ... A1 s1 A2 s2 A3 ...B1 s1' B2 s2' B3...
@@ -175,6 +186,15 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
 
             if (s1Mismatch > alpha || s2Mismatch > alpha) {
                 continue;
+            }
+
+            if (t) {
+                firstStart = partitionIdxToSeqIdx(firstStart, t->partitionNum1, t->partitionSize);
+                if (t->partitionNum1 == t->partitionNum2) {
+                    secondStart = partitionIdxToSeqIdx(secondStart, t->partitionNum2, t->partitionSize);
+                } else {
+                    secondStart = partitionIdxToSeqIdx(secondStart - t->partitionSize - 1, t->partitionNum2, t->partitionSize);
+                }
             }
 
             fprintf(outputFile, "(%ld,%ld,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
@@ -276,8 +296,8 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
             int firstS2Length = x1 - i1 + repeat1Length + (x2 - i2);
 
             unsigned long  secondStart = leftExtensionStart2 + repeat2p2 - i1;
-            int secondS2Length = firstS1Length;
-            int secondS1Length = firstS2Length;
+            int secondS2Length = firstS2Length;
+            int secondS1Length = firstS1Length;
 
             double totalMismatchRatio = (s1Min1 + s1Min2 + s2Min1 + s2Min2) / ((double) x1 + x2 + exactLength);
             double s1Mismatch = (s1Min1 + s1Min2) / ((double) firstS1Length); // use both instead of one
@@ -287,8 +307,18 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
                 continue;
             }
 
+            if (t) {
+                firstStart = partitionIdxToSeqIdx(firstStart, t->partitionNum1, t->partitionSize);
+                if (t->partitionNum1 == t->partitionNum2) {
+                    secondStart = partitionIdxToSeqIdx(secondStart, t->partitionNum2, t->partitionSize);
+                } else {
+                    secondStart = partitionIdxToSeqIdx(secondStart - t->partitionSize - 1, t->partitionNum2, t->partitionSize);
+                }
+            }
+
             fprintf(outputFile, "(%ld,%ld,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
             firstS2Length, secondS1Length, secondS2Length, totalMismatchRatio, s1Mismatch, s2Mismatch, x1+x2+exactLength);
+
 
             // printf("(%d,%d,%d,%d,%d,%d,%f,%f,%f,%d)\n", firstStart, secondStart, firstS1Length, 
             // firstS2Length, secondS1Length, secondS2Length, totalMismatchRatio, s1Mismatch, s2Mismatch, x1+x2+exactLength);
@@ -299,6 +329,7 @@ void findInvertedCircleRepeatedPairs(char *seq, unsigned long n, int l1, int l2,
         freeMRPList(secondLevelMrps2);
     }
     
+    free(seq);
     freeMRPList(firstLevelMrps);
     fclose(outputFile);
     printf("the number of cirlce repeat found: %d \n", count);

@@ -37,5 +37,4 @@ typedef struct  {
 } interval;
 
 
-
 #endif

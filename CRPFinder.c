@@ -17,7 +17,7 @@
 
 
 int main(int argc, char *argv[]) {
-
+    
     // arg[1] = direct or inverted
     // --single     name (optional)
     // --partition  partition_file_directory_path task_numbers (optional)
@@ -187,7 +187,8 @@ int main(int argc, char *argv[]) {
             findDirectCircleRepeatedPairs(seq, NULL, sequenceLength, 0, l1, l2, L, alpha, 
                 "result/DirectCircleRepeatIndices.txt", 0, NULL);
         } else {
-            findInvertedCircleRepeatedPairs(seq, sequenceLength, l1, l2, L, alpha, "result/InvertedCircleRepeatIndices.txt", 0);
+            findInvertedCircleRepeatedPairs(seq, NULL, sequenceLength, 0, l1, l2, L, alpha, 
+                "result/InvertedCircleRepeatIndices.txt", 0, NULL);
         }
 
         free(seq);
@@ -255,7 +256,7 @@ int main(int argc, char *argv[]) {
             if (useDirectSearch) {
                 findDirectCircleRepeatedPairs(seq1, seq2, n, n2, l1, l2, L, alpha, taskOutputFilePath, 0, &tasks->tasks[i]);
             } else {
-
+                findInvertedCircleRepeatedPairs(seq1, seq2, n, n2, l1, l2, L, alpha, taskOutputFilePath, 0, &tasks->tasks[i]);
             }
             
             free(seq1);

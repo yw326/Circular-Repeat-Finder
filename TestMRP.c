@@ -85,21 +85,21 @@ int testSearchMRP2() {
 
 int testSearchMRP3() {
     // arrange
-    long sequenceLength = getDNASequenceLengthFromFile("NC_021868.txt");
+    long sequenceLength = getDNASequenceLengthFromFile("TestData/NC_021868.txt");
     const char* seq = malloc(sizeof(char)*(sequenceLength+1));
-    getDNASequenceFromFile("NC_021868.txt", seq);
+    getDNASequenceFromFile("TestData/NC_021868.txt", seq);
     int threshold = 10;
     long n = sequenceLength;
 
     // act
     mrpList *ml = searchMRPInSingleSequence(seq, n, threshold);
 
-    FILE *fp;
-    fp = fopen("3481.txt", "w+");
-    for (int i = 0; i < ml->size; i++) {
-        fprintf(fp, "%d %d %d\n", ml->mrps[i].p1, ml->mrps[i].p2, ml->mrps[i].length);
-    }
-    fclose(fp);
+    // FILE *fp;
+    // fp = fopen("3481.txt", "w+");
+    // for (int i = 0; i < ml->size; i++) {
+    //     fprintf(fp, "%d %d %d\n", ml->mrps[i].p1, ml->mrps[i].p2, ml->mrps[i].length);
+    // }
+    // fclose(fp);
 
     // assert
     int failed = 0;
@@ -247,7 +247,6 @@ int testSearchInvertedMRPInSingleSequence() {
 
 int testSearchInvertedMRPInTwoSequences() {
     // arrange
-
     // inverse of AAGAC is GTCTT
     const char* seq1 = "AAAGACA";
     const char* seq2 = "AGTCTTC";
@@ -276,6 +275,41 @@ int testSearchInvertedMRPInTwoSequences() {
     freeMRPList(ml);
 
     printf("Passed: searchInvertedMRPInTwoSequences\n");
+    return failed;
+}
+
+int testSearchInvertedMRPInTwoSequencesAbsolute() {
+    // arrange
+    // inverse of AAGAC is GTCTT
+    const char* seq1 = "AAAGACA";
+    const char* seq2 = "AGTCTTC";
+    int threshold = 5;
+    long n1 = strlen(seq1);
+    long n2 = strlen(seq2);
+
+    // act
+    mrpList *ml = searchInvertedMRPInTwoSequencesAbsolute(seq1, seq2, n1, n2, threshold);
+
+    // assert
+    int failed = 0;
+    int expectedSize = 1;
+    mrp expectedMRP1 = {1,9,5};
+
+    if (ml->size != expectedSize) {
+        printf("Failed: testSearchInvertedMRPInTwoSequencesAbsolute, expected the number of MRPs to be %d, but found %d\n", expectedSize, ml->size);
+        return 1;
+    }
+
+    if (!isMRPInResult(expectedMRP1, ml) ) {
+        printf("Failed: testSearchInvertedMRPInTwoSequencesAbsolute, mrp (%d,%d,%d) is not found\n", expectedMRP1.p1, expectedMRP1.p2, expectedMRP1.length);
+        return 1;
+    }
+
+    
+
+    freeMRPList(ml);
+
+    printf("Passed: testSearchInvertedMRPInTwoSequencesAbsolute\n");
     return failed;
 }
 

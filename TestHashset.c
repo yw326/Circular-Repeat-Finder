@@ -40,13 +40,17 @@ int testRemoveDuplicates() {
 
     // act 
     mrpList* resultMl = removeDuplicates(ml);
-    freeMRPList(ml);
+    
+    
 
     // assert
     if (resultMl->size != 3) {
         printf("Failed: testRemoveDuplicates, number of elements incorrect. Expected 3, found %d \n", resultMl->size);
         return 1;
     }
+
+    freeMRPList(resultMl);
+    freeMRPList(ml);
 
     return 0;
 }

@@ -202,6 +202,13 @@ void mrpsFromTwoLists(List *l1, List *l2, mrp* result, int* mrpCount, int_t lcp,
                     result[mrpCount[0]] = newMRP;
                     mrpCount[0]++;
                 }
+            } else if (option == 4) {
+                if (val1 < middleSeparatorIdx && val2 > middleSeparatorIdx) {
+                    val2 = getCorresondingIndexFromConcatenatedInvertedSequenceRightAbsolute(val2, lcp, middleSeparatorIdx, n-1);
+                    mrp newMRP = {val1, val2, lcp};
+                    result[mrpCount[0]] = newMRP;
+                    mrpCount[0]++;
+                }
             }
             curr2 = curr2->next;
         }
@@ -325,17 +332,9 @@ mrpList* searchMRPWithOption(const char* sequence, unsigned long n, uint_t thres
 
     reformatSuffixArrays(sequence, SA, LCP, BWT, n);
 
-    // mrpList *dummy = malloc(sizeof(mrpList));
-    // dummy->size = 0;
-    // return dummy;
-
     // bottom up traversal
     // use an array of interval pointers to simulate stack
     interval **stack = malloc(sizeof(interval*)*2*n); 
-    // for(int i = 0; i < 2*n; i++) {
-    //     stack[i] = NULL;
-    // }
-
     interval* lastInterval = NULL;
 
     // add the first interval
@@ -454,6 +453,16 @@ mrpList* searchInvertedMRPInTwoSequences(const char* seq1, const char* seq2, uns
     char* seq = malloc(sizeof(char)*(n1+n2+2));
     getConcantenatedInvertedSequenceDiff(seq1, seq2, n1, n2, seq);
     mrpList* ml = searchMRPWithOption(seq, n1+n2+2, threshold, 3, n1);
+
+    free(seq);
+    return ml;
+}
+
+mrpList* searchInvertedMRPInTwoSequencesAbsolute(const char* seq1, const char* seq2, unsigned long n1, unsigned long n2, 
+            uint_t threshold) {
+    char* seq = malloc(sizeof(char)*(n1+n2+2));
+    getConcantenatedInvertedSequenceDiff(seq1, seq2, n1, n2, seq);
+    mrpList* ml = searchMRPWithOption(seq, n1+n2+2, threshold, 4, n1);
 
     free(seq);
     return ml;

@@ -4,6 +4,6 @@
 #include "InvertedCircleRepeatFinder.h"
 
 int testFindInvertedCircleRepeatedPairs();
-// int testFindInvertedCircleRepeatedPairsSubstrings1();
+int testFindInvertedCircleRepeatedPairsPartition();
 
 #endif 

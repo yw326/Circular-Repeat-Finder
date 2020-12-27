@@ -12,7 +12,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <dirent.h>
-
+#include "MyStructs.h"
 
 #endif /* Utils_h */
 
@@ -55,6 +55,12 @@ unsigned long getCorresondingIndexFromConcatenatedInvertedSequenceLeft(unsigned 
 unsigned long getCorresondingIndexFromConcatenatedInvertedSequenceRight(unsigned long startIndex, int stringLength, 
                                                                         unsigned long n);
 
+/**
+ * in a string s1#s2', given some substring in s2', find its corresponding start index in s1#s2
+ */
+unsigned long getCorresondingIndexFromConcatenatedInvertedSequenceRightAbsolute(unsigned long startIndex, int subStringLength, 
+                unsigned long middleSeparatorIdx, unsigned long totalLength);
+
 
 void substring(char* s, int start, int length, char* substr);
 char* returnSubstring(char* s, int start, int length);
@@ -74,3 +80,22 @@ void freePartitions(char** partitions, int numberOfPartitions);
 int countNumPartitionFilesInDir(char* dir);
 unsigned long getPartitionSize(const char* dir);
 unsigned long partitionIdxToSeqIdx(unsigned long partitionIdx, int partitionNum, unsigned long partitionSize);
+
+
+// -------------------------------- for testing --------------------------------
+
+// return a list of fixed size array of strings
+// each array contains a fixed number of tokens, specifying a circular repeat
+char*** readResultIdxFile(char* fileName, int numberOfTokenExtracting);
+
+// similar to readResultIdxFile, but reads a dir of result files for partition option
+char*** readResultDir(char* dir, int numberOfTokenExtracting);
+
+int countLinesInFile(char* fileName);
+int countLinesInDir(char* dir);
+
+void freeReadFileResult(char*** result, int numberOfLines, int tokensExtractedPerLine);
+
+// print the elements in result1 but not in result2, and return the count
+int resultDifference(char*** rst1, char*** rst2, int numTokens, int size1, int size2);
+

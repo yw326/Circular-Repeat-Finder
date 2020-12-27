@@ -4,7 +4,9 @@
 #include "DirectCircleRepeatFinder.h"
 
 int testFindDirectCircleRepeatedPairs();
-int testFindDirectCircleRepeatedPairsSubstrings1();
-int testFindDirectCircleRepeatedPairsSubstrings2();
+int testFindDirectCircleRepeatedPairsPartition();
+
+// int testFindDirectCircleRepeatedPairsSubstrings1();
+// int testFindDirectCircleRepeatedPairsSubstrings2();
 
 #endif 

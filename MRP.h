@@ -35,6 +35,13 @@ mrpList* searchInvertedMRPInSingleSequence(const char* sequence, unsigned long n
 mrpList* searchInvertedMRPInTwoSequences(const char* seq1, const char* seq2, unsigned long n1, unsigned long n2, 
             uint_t threshold);
 
+/**
+ * given sequence = s1#s2'
+ * output all maximal inverted pairs (p1,p2,l) wrt string s1#s2 with p1 in s1 and p2 in s2 
+ * here the index of p2 is absolute
+ */
+mrpList* searchInvertedMRPInTwoSequencesAbsolute(const char* seq1, const char* seq2, unsigned long n1, unsigned long n2, 
+            uint_t threshold);
 
 void freeMRPList(mrpList *ml);
 

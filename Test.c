@@ -42,6 +42,7 @@ int main(int argc, char *argv[]) {
     failedCount += testGetCorresondingIndexFromConcatenatedInvertedSequenceLeft();
     failedCount += testSearchInvertedMRPInSingleSequence();
     failedCount += testSearchInvertedMRPInTwoSequences();
+    failedCount += testSearchInvertedMRPInTwoSequencesAbsolute();
     failedCount += testGetSplittedSeqFilePath();
     failedCount += testPartitionSequence1();
     failedCount += testPartitionSequence2();
@@ -53,17 +54,11 @@ int main(int argc, char *argv[]) {
     /**
      * compare results with the original suffix tree implementation
      */ 
-    // failedCount += testFindDirectCircleRepeatedPairs();
-    // failedCount += testFindInvertedCircleRepeatedPairs();
+    failedCount += testFindDirectCircleRepeatedPairs();
+    failedCount += testFindDirectCircleRepeatedPairsPartition();
+    failedCount += testFindInvertedCircleRepeatedPairs();
+    failedCount += testFindInvertedCircleRepeatedPairsPartition();
     
-    
-
-    /**
-     * print out substrings and compare with desired results in the test's comments
-     */ 
-    // failedCount += testFindDirectCircleRepeatedPairsSubstrings1();
-    // failedCount += testFindDirectCircleRepeatedPairsSubstrings2();
-    // failedCount += testFindInvertedCircleRepeatedPairsSubstrings1();
     
 
     /**

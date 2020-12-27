@@ -15,6 +15,7 @@ int testSearchMRPInTwoSequences();
 int testSearchMRPInTwoSequences2();
 int testSearchInvertedMRPInSingleSequence();
 int testSearchInvertedMRPInTwoSequences();
+int testSearchInvertedMRPInTwoSequencesAbsolute();
 
 
 #endif 

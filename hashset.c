@@ -247,7 +247,9 @@ mrpList* removeDuplicates(mrpList* resultWithDuplicates) {
     for (int i = 0; i < resultWithDuplicates->size; i++) {
         mrp m = resultWithDuplicates->mrps[i];
         if (!hashset_is_member(set, m)) {
-            resultMRPs[size] = m;
+            resultMRPs[size].p1 = m.p1;
+            resultMRPs[size].p2 = m.p2;
+            resultMRPs[size].length = m.length;
             size++;
             hashset_add(set,m);
         }

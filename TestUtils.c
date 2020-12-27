@@ -8,7 +8,7 @@
 #include "TestUtils.h"
 
 char testString[] = "ATCGTTCG";
-char testLoadFileName[] = "test_LoadFile.txt";
+char testLoadFileName[] = "TestData/test_LoadFile.txt";
 
 int testGetDNASequenceFromFile() {
     // arrange
@@ -355,7 +355,7 @@ int testPartitionSequence2() {
 int testCountNumPartitionFilesInDir() {
     
     // act
-    int numPartitionFiles = countNumPartitionFilesInDir("test_partition_dir");
+    int numPartitionFiles = countNumPartitionFilesInDir("TestData/test_partition_dir");
 
     // assert
     int failed = 0;
@@ -371,7 +371,7 @@ int testCountNumPartitionFilesInDir() {
 
 int testGetPartitionSize() {
     // arrange
-    const char *dir = "test_partition_dir";
+    const char *dir = "TestData/test_partition_dir";
 
     // act
     unsigned long l = getPartitionSize(dir);

@@ -47,19 +47,24 @@ void getMiminizationVector(char* s1, char* s2, char* s3, unsigned long l, int* r
     free(v2Reverse);
 }
 
-void findDirectCircleRepeatedPairs(char *seq, char* seq2, unsigned long n, unsigned long n2, 
+void findDirectCircleRepeatedPairs(char *seq1, char* seq2, unsigned long n1, unsigned long n2, 
         int l1, int l2, int L, double alpha, char* outputFilePath, int verbose, task *t) {
-    
     
     FILE* outputFile = fopen(outputFilePath, "w");
     int count = 0;
 
+
     mrpList *firstLevelMrps;
     if (t && t->partitionNum1 != t->partitionNum2) {
-        firstLevelMrps = searchMRPInTwoSequences(seq, seq2, n, n2, l1);
+        firstLevelMrps = searchMRPInTwoSequences(seq1, seq2, n1, n2, l1);
     } else {
-        firstLevelMrps = searchMRPInSingleSequence(seq, n, l1);
+        firstLevelMrps = searchMRPInSingleSequence(seq1, n1, l1);
     }
+
+    
+
+    char* seq = malloc(sizeof(char)*(n1+n2+2));
+    getConcatenatedSequence(seq, seq1, seq2, n1, n2);
     
     printf("the number of first level mrps is %d\n", firstLevelMrps->size);
 
@@ -87,7 +92,6 @@ void findDirectCircleRepeatedPairs(char *seq, char* seq2, unsigned long n, unsig
         }
         
         mrpList* secondLevelMrps = searchMRPInTwoSequences(firstRightExtension, secondLeftExtension, L, L, l2);
-
         free(firstRightExtension); free(secondLeftExtension); 
 
         for (int j = 0; j < secondLevelMrps->size; j++) {
@@ -136,7 +140,6 @@ void findDirectCircleRepeatedPairs(char *seq, char* seq2, unsigned long n, unsig
             } 
 
             // get second minimizaion result
-
             char* A1 = returnSubstring(seq, repeat1p1-x2, x2);
             char* A3 = returnSubstring(seq, firstRightExtensionStart + repeat2p1 + repeat2Length, x2);
             char* B2 = returnSubstring(seq, repeat1p2 - x2, x2);
@@ -196,7 +199,7 @@ void findDirectCircleRepeatedPairs(char *seq, char* seq2, unsigned long n, unsig
         int firstLeftExtensionStart = repeat1p1 - L;
         int secondRightExtensionStart = repeat1p2 + repeat1Length;
 
-        if (firstLeftExtensionStart < 0 || secondRightExtensionStart + L >= n) {
+        if (firstLeftExtensionStart < 0 || secondRightExtensionStart + L >= n1+n2) {
             continue;
         }
 
@@ -303,6 +306,7 @@ void findDirectCircleRepeatedPairs(char *seq, char* seq2, unsigned long n, unsig
         freeMRPList(secondLevelMrps2);
     }
     
+    free(seq);
     freeMRPList(firstLevelMrps);
     fclose(outputFile);
     printf("the number of cirlce repeat found: %d \n", count);

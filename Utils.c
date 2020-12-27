@@ -198,7 +198,7 @@ int charToIndex(char c) {
 }
 
 unsigned long getCorresondingIndexFromConcatenatedInvertedSequenceLeft(unsigned long startIndex, int subStringLength, 
-                                                                   unsigned long n) {
+                unsigned long n) {
     // (total length) - startIndex - stringLength
     return 2*n + 1 - startIndex - subStringLength;
 }
@@ -208,8 +208,17 @@ unsigned long getCorresondingIndexFromConcatenatedInvertedSequenceRight(unsigned
     // original: XXXX#ATTCGT
     // inverted: XXXX#ACGAAT
     // given substring GAA in inverted, want to find TTC
-    // totalLength = 11, stringlength = 3, startIndex = 7 => get TTC start at 6
+    // totalLength = 11, stringlength = 3, startIndex = 7 => get TTC start at 1
     return totalLength - subStringLength - startIndex;
+}
+
+unsigned long getCorresondingIndexFromConcatenatedInvertedSequenceRightAbsolute(unsigned long startIndex, int subStringLength, 
+                unsigned long middleSeparatorIdx, unsigned long totalLength) {
+    // original: XXXX#ATTCGTT
+    // inverted: XXXX#AACGAAT
+    // given substring GAA in inverted, want to find TTC (absolute index)
+    // totalLength = 12, stringlength = 3, startIndex = 8, separator = 4 => get TTC start at 6
+    return totalLength - subStringLength - startIndex + middleSeparatorIdx + 1;
 }
 
 
@@ -311,4 +320,151 @@ unsigned long getPartitionSize(const char* dir) {
 
 unsigned long partitionIdxToSeqIdx(unsigned long partitionIdx, int partitionNum, unsigned long partitionSize) {
     return partitionSize * (partitionNum - 1) + partitionIdx;
+}
+
+
+int countLinesInFile(char* fileName) {
+    int numLines = 0;
+    FILE* file = fopen(fileName, "r");
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        numLines++;
+    }
+    fclose(file);
+    return numLines;  
+}
+
+
+char*** readResultIdxFile(char* fileName, int numberOfTokenExtracting) {
+
+    int linesInFile = countLinesInFile(fileName);
+    char*** result = malloc(sizeof(char**)*linesInFile);
+    FILE* file = fopen(fileName, "r");
+
+    int numLines = 0;
+
+    char line[256];
+    while (fgets(line, sizeof(line), file)) {
+        result[numLines] = malloc(sizeof(char*)*numberOfTokenExtracting);
+
+        char *token = strtok(line, ",");
+        result[numLines][0] = malloc(sizeof(char)*(strlen(token)+1));
+        strcpy(result[numLines][0], token);
+        
+        for (int i = 1; i < numberOfTokenExtracting; i++) {
+            token = strtok(NULL, ",");
+            result[numLines][i] = malloc(sizeof(char)*(strlen(token)+1));
+            strcpy(result[numLines][i], token);
+        }
+        numLines++;
+    }
+
+    fclose(file);
+
+    return result;
+}
+
+void freeReadFileResult(char*** result, int numberOfLines, int tokensExtractedPerLine) {
+    for (int i = 0; i < numberOfLines; i++) {
+        for (int j = 0; j < tokensExtractedPerLine; j++) {
+            free(result[i][j]);
+        }
+        free(result[i]);
+    }
+    free(result);
+}
+
+int isMatch(char** line1, char** line2, int numTokens) {
+    for (int i = 0; i < numTokens; i++) {
+        if (strcmp(line1[i], line2[i]) != 0) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int resultDifference(char*** rst1, char*** rst2, int numTokens, int size1, int size2) {
+    int missedCount = 0;
+    for (int i = 0; i < size1; i++) {
+        int found = 0;
+        for (int j = 0; j < size2; j++) {
+            if (isMatch(rst1[i], rst2[j], numTokens)) {
+                found = 1;
+                break;
+            }
+        }
+        if (!found) {
+            for (int k = 0; k < numTokens; k++) {
+                printf("%s,", rst1[i][k]);
+            }
+            printf("\n");
+            missedCount++;
+        }
+    }
+    return missedCount;
+}
+
+char*** readResultDir(char* dir, int numberOfTokenExtracting) {
+
+    int linesCount = countLinesInDir(dir);
+    char*** result = malloc(sizeof(char**)*linesCount);
+
+    int numLines = 0;
+    DIR * dirp;
+    struct dirent * entry;
+    
+    dirp = opendir(dir);
+    while ((entry = readdir(dirp)) != NULL) {
+        char* prefix = returnSubstring(entry->d_name, 0, 4);
+        if (strcmp("task", prefix) == 0) {
+            char filePath[100];
+            strcpy(filePath, dir);
+            strcat(filePath, "/");
+            strcat(filePath, entry->d_name);
+
+            FILE* file = fopen(filePath, "r");
+            char line[256];
+            while (fgets(line, sizeof(line), file)) {
+                result[numLines] = malloc(sizeof(char*)*numberOfTokenExtracting);
+                char *token = strtok(line, ",");
+                result[numLines][0] = malloc(sizeof(char)*(strlen(token)+1));
+                strcpy(result[numLines][0], token);
+                for (int i = 1; i < numberOfTokenExtracting; i++) {
+                    token = strtok(NULL, ",");
+                    result[numLines][i] = malloc(sizeof(char)*(strlen(token)+1));
+                    strcpy(result[numLines][i], token);
+                }
+                numLines++;
+            }
+            fclose(file);
+            
+        }
+        free(prefix);
+    }
+    closedir(dirp);
+
+    return result;
+}
+
+int countLinesInDir(char* dir) {
+    int count = 0;
+    DIR * dirp;
+    struct dirent * entry;
+    
+    dirp = opendir(dir);
+    while ((entry = readdir(dirp)) != NULL) {
+        char* prefix = returnSubstring(entry->d_name, 0, 4);
+        
+        if (strcmp("task", prefix) == 0) {
+            char filePath[100];
+            strcpy(filePath, dir);
+            strcat(filePath, "/");
+            strcat(filePath, entry->d_name);
+            count += countLinesInFile(filePath);
+        }
+        free(prefix);        
+    }
+    closedir(dirp);
+    return count;
 }

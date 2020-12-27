@@ -99,6 +99,7 @@ int testFindDirectCircleRepeatedPairsPartition() {
     freeReadFileResult(expectedResult, expectedCount, numberOfTokenExtracting);
 
     printf("Passed: testFindDirectCircleRepeatedPairsPartition\n");
+    return 0;
 }
 
 

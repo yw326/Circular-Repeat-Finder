@@ -88,9 +88,15 @@ There will be an index file as output in the result folder. Each circle repeat i
 * 10th: length of s<sub>1</sub>s<sub>2</sub>
 
 ## What's New
-In version 2.0, suffix array replaces suffix tree for MRP search, increasing the memory efficiency by more than 10 times.
 
-## To Do
-In version 2.0, <code>--partition</code> option for inverted circular repeats has not been implemented (though <code>--single</code> still works).
+### Version 2.0
+
+Suffix array replaces suffix tree for MRP search, increasing the memory efficiency 
+
+### Version 2.1
+
+Implemented inverted search with partition option
+
+
 
 
